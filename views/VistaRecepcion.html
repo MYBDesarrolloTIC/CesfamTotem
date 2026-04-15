@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recepción - CESFAM</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+    <nav class="navbar navbar-dark bg-dark mb-4">
+        <div class="container-fluid">
+            <span class="navbar-brand mb-0 h1">Módulo de Admisión y Entrega de Tickets</span>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="row g-4">
+            <div class="col-md-5">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-primary text-white fw-bold">1. Datos del Paciente</div>
+                    <div class="card-body">
+                        <label class="form-label">RUT del Paciente</label>
+                        <div class="input-group mb-3">
+                            <input type="text" id="rutPaciente" class="form-control" placeholder="12.345.678-9">
+                            <button class="btn btn-outline-primary" type="button" onclick="simularBusqueda()">Buscar</button>
+                        </div>
+
+                        <div id="formNuevoPaciente" class="d-none bg-light p-3 border rounded mb-3">
+                            <p class="text-danger small mb-2 fw-bold">⚠️ Paciente no registrado. Ingrese los datos iniciales:</p>
+                            <label class="form-label small">Fecha de Nacimiento</label>
+                            <input type="date" class="form-control mb-2">
+                            <label class="form-label small">Edad</label>
+                            <input type="number" class="form-control mb-3">
+                            <button class="btn btn-sm btn-success w-100" onclick="registrarNuevo()">Guardar Paciente</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-7">
+                <div class="card shadow-sm d-none" id="panelModulos">
+                    <div class="card-header bg-success text-white fw-bold">2. Asignar Fila / Imprimir Ticket</div>
+                    <div class="card-body">
+                        <h5 class="mb-3">Seleccione el destino:</h5>
+                        <div class="row g-3">
+                            <div class="col-sm-6">
+                                <button class="btn btn-outline-primary w-100 py-4 fw-bold">💊 Farmacia Común</button>
+                            </div>
+                            <div class="col-sm-6">
+                                <button class="btn btn-outline-warning w-100 py-4 fw-bold text-dark">⭐ Farmacia Preferencial</button>
+                            </div>
+                            <div class="col-sm-12">
+                                <button class="btn btn-outline-success w-100 py-4 fw-bold">🩺 Toma de Hora / Enfermería</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function simularBusqueda() {
+            const rut = document.getElementById('rutPaciente').value;
+            // Aquí en tu proyecto real harías una llamada Fetch/AJAX a PHP
+            if(rut === 'nuevo') {
+                document.getElementById('formNuevoPaciente').classList.remove('d-none');
+                document.getElementById('panelModulos').classList.add('d-none');
+            } else {
+                document.getElementById('formNuevoPaciente').classList.add('d-none');
+                document.getElementById('panelModulos').classList.remove('d-none');
+            }
+        }
+        function registrarNuevo() {
+            alert("Datos guardados en BD");
+            document.getElementById('formNuevoPaciente').classList.add('d-none');
+            document.getElementById('panelModulos').classList.remove('d-none');
+        }
+    </script>
+</body>
+</html>

@@ -20,7 +20,8 @@ class Conexion {
             ];
             $this->conexion = new PDO($dsn, $this->user, $this->pass, $options);
         } catch (PDOException $e) {
-            die(json_encode(["success" => false, "message" => "Error de conexión a la BD"]));
+            http_response_code(503);
+            die(json_encode(["message" => "Error de conexión a la base de datos"]));
         }
     }
 

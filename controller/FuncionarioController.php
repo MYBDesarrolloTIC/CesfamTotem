@@ -68,7 +68,8 @@ final class FuncionarioController
         $siguiente = $stmt->fetch(PDO::FETCH_ASSOC);
 
         if (!$siguiente) {
-            throw new RuntimeException('No hay turnos en espera', 404);
+            // Cola vacía: devolver estado actual sin lanzar error HTTP
+            return array_merge($this->estadoModulo($idModulo), ['sin_turnos' => true]);
         }
 
         // Asignar al módulo y marcar como llamado

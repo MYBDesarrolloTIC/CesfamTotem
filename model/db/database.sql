@@ -129,8 +129,8 @@ INSERT INTO modulos (nombre, password, activo) VALUES
 -- =============================================================================
 
 INSERT INTO pacientes (rut, nombres, apellido_p, apellido_m, fecha_nacimiento, edad, estado, es_preferente) VALUES
-    ('12345678-9', 'Juan Carlos',  'Pérez',    'González', '1990-03-15', 35, 1, FALSE),
-    ('98765432-1', 'María Elena',  'González', 'López',    '1958-07-22', 67, 1, TRUE),  -- adulto mayor
+    ('12345678-5', 'Juan Carlos',  'Pérez',    'González', '1990-03-15', 35, 1, FALSE),
+    ('98765432-5', 'María Elena',  'González', 'López',    '1958-07-22', 67, 1, TRUE),  -- adulto mayor
     ('11111111-1', 'Carlos',       'López',    'Muñoz',    '1985-11-05', 40, 1, FALSE),
     ('22222222-2', 'Ana Sofía',    'Martínez', 'Rojas',    '1972-01-30', 53, 1, TRUE),  -- es_preferente manual
     ('33333333-3', 'Pedro Pablo',  'Rojas',    'Vega',     '2000-06-18', 25, 1, FALSE),

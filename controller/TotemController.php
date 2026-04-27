@@ -30,6 +30,9 @@ final class TotemController
             throw new RuntimeException('RUT requerido', 400);
         }
 
+        // Normalizar: quitar puntos de formato (la BD almacena sin puntos, ej: "11111111-1")
+        $rut = str_replace('.', '', $rut);
+
         $stmt = $this->db->prepare(
             'SELECT id, rut, nombres, apellido_p, apellido_m,
                     fecha_nacimiento, edad, es_preferente

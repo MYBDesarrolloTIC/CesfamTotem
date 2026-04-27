@@ -39,7 +39,7 @@ function formatearRut(rut) {
 
 function validarRut(rut) {
     const limpio = limpiarRut(rut);
-    if (!/^\d{7,8}[0-9K]$/.test(limpio)) return false;
+    if (!/^\d{6,8}[0-9K]$/.test(limpio)) return false;
 
     const cuerpo = limpio.slice(0, -1);
     const dvReal = limpio.slice(-1);

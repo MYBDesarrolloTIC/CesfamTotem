@@ -196,7 +196,11 @@ async function accionLlamar() {
     state.rellamadas = 0;
     state.cola       = data?.cola ?? [];
     renderEstado();
-    if (state.turno) hablar(state.turno.ticket_numero);
+    if (data?.sin_turnos) {
+      errorTemporal('No hay turnos en espera.');
+    } else if (state.turno) {
+      hablar(state.turno.ticket_numero);
+    }
   } catch (err) {
     errorTemporal(err.message ?? 'No hay turnos en espera.');
   } finally {

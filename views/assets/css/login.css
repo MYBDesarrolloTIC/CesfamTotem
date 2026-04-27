@@ -1,0 +1,309 @@
+/* ──────────────────────────────────────────────────────────────────
+   LOGIN — Módulo Funcionarios
+   Tema: Azul institucional CESFAM
+   ────────────────────────────────────────────────────────────────── */
+
+:root {
+    --c-primary:      #1a3f6b;
+    --c-primary-dark: #0d2137;
+    --c-accent:       #2d7dd2;
+    --c-accent-hover: #1f5fa8;
+    --c-pref:         #d97706;
+    --c-pref-bg:      #fef3c7;
+    --c-surface:      #ffffff;
+    --c-bg:           #f0f4f8;
+    --c-text:         #1e293b;
+    --c-muted:        #64748b;
+    --c-error:        #dc2626;
+    --c-border:       #cbd5e1;
+    --radius:         12px;
+    --shadow:         0 8px 32px rgba(13, 33, 55, 0.18);
+    --transition:     0.2s ease;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    min-height: 100vh;
+    display:    flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, var(--c-primary-dark) 0%, var(--c-primary) 60%, #2d6aa3 100%);
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    color: var(--c-text);
+}
+
+/* ── Tarjeta principal ─────────────────────────────────────────── */
+
+.login-card {
+    width:      100%;
+    max-width:  440px;
+    background: var(--c-surface);
+    border-radius: calc(var(--radius) * 1.5);
+    box-shadow: var(--shadow);
+    padding: 2.5rem 2.5rem 2rem;
+    animation: aparecer 0.4s ease;
+}
+
+@keyframes aparecer {
+    from { opacity: 0; transform: translateY(24px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Encabezado ────────────────────────────────────────────────── */
+
+.login-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.login-logo {
+    width: 72px; height: 72px;
+    background: linear-gradient(135deg, var(--c-primary), var(--c-accent));
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1rem;
+}
+
+.login-logo svg { width: 38px; height: 38px; fill: #fff; }
+
+.login-header h1 {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--c-primary);
+    line-height: 1.2;
+}
+
+.login-header p {
+    font-size: 0.875rem;
+    color: var(--c-muted);
+    margin-top: 0.3rem;
+}
+
+/* ── Formulario ────────────────────────────────────────────────── */
+
+.form-group {
+    margin-bottom: 1.25rem;
+}
+
+label {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--c-primary);
+    margin-bottom: 0.4rem;
+    letter-spacing: 0.01em;
+}
+
+input[type="text"],
+select {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 2px solid var(--c-border);
+    border-radius: var(--radius);
+    font-size: 1rem;
+    color: var(--c-text);
+    background: var(--c-bg);
+    transition: border-color var(--transition), box-shadow var(--transition);
+    outline: none;
+}
+
+input[type="text"]:focus,
+select:focus {
+    border-color: var(--c-accent);
+    box-shadow: 0 0 0 3px rgba(45, 125, 210, 0.15);
+    background: #fff;
+}
+
+input[type="text"].error,
+select.error {
+    border-color: var(--c-error);
+    box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.12);
+}
+
+.input-hint {
+    font-size: 0.78rem;
+    color: var(--c-muted);
+    margin-top: 0.3rem;
+}
+
+.input-error {
+    font-size: 0.8rem;
+    color: var(--c-error);
+    margin-top: 0.3rem;
+    font-weight: 500;
+    display: none;
+}
+
+.input-error.visible { display: block; }
+
+/* ── Modos (radio buttons) ─────────────────────────────────────── */
+
+.modos-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+}
+
+.modo-option {
+    position: relative;
+}
+
+.modo-option input[type="radio"] {
+    position: absolute;
+    opacity: 0;
+    width: 0; height: 0;
+}
+
+.modo-option label {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 0.9rem 0.5rem;
+    border: 2px solid var(--c-border);
+    border-radius: var(--radius);
+    cursor: pointer;
+    transition: border-color var(--transition), background var(--transition);
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-align: center;
+    gap: 0.3rem;
+    margin: 0;
+}
+
+.modo-option .modo-icon { font-size: 1.5rem; }
+
+.modo-option input[type="radio"]:checked + label {
+    border-color: var(--c-accent);
+    background: rgba(45, 125, 210, 0.08);
+    color: var(--c-accent);
+}
+
+.modo-option.pref input[type="radio"]:checked + label {
+    border-color: var(--c-pref);
+    background: var(--c-pref-bg);
+    color: var(--c-pref);
+}
+
+/* ── Botones ───────────────────────────────────────────────────── */
+
+.btn {
+    width: 100%;
+    padding: 0.85rem 1.5rem;
+    border: none;
+    border-radius: var(--radius);
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background var(--transition), transform var(--transition);
+    letter-spacing: 0.02em;
+}
+
+.btn:active { transform: scale(0.98); }
+
+.btn-primary {
+    background: var(--c-accent);
+    color: #fff;
+}
+
+.btn-primary:hover { background: var(--c-accent-hover); }
+
+.btn-primary:disabled {
+    background: var(--c-border);
+    color: var(--c-muted);
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* ── Overlay / Modal ───────────────────────────────────────────── */
+
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(10, 25, 50, 0.65);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    z-index: 100;
+    animation: fadeIn 0.25s ease;
+}
+
+.modal-overlay[hidden] { display: none; }
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+.modal-card {
+    background: var(--c-surface);
+    border-radius: calc(var(--radius) * 1.5);
+    box-shadow: var(--shadow);
+    padding: 2rem;
+    width: 100%;
+    max-width: 420px;
+    animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+    from { transform: translateY(30px); opacity: 0; }
+    to   { transform: translateY(0);    opacity: 1; }
+}
+
+.modal-card h2 {
+    font-size: 1.2rem;
+    color: var(--c-primary);
+    margin-bottom: 0.25rem;
+}
+
+.modal-bienvenida {
+    font-size: 0.875rem;
+    color: var(--c-muted);
+    margin-bottom: 1.5rem;
+}
+
+.rut-display {
+    font-weight: 700;
+    color: var(--c-accent);
+}
+
+.modal-actions {
+    margin-top: 1.5rem;
+    display: flex;
+    gap: 0.75rem;
+}
+
+.modal-actions .btn { flex: 1; }
+
+.btn-outline {
+    background: transparent;
+    border: 2px solid var(--c-border);
+    color: var(--c-muted);
+    font-weight: 600;
+}
+
+.btn-outline:hover {
+    border-color: var(--c-accent);
+    color: var(--c-accent);
+    background: rgba(45, 125, 210, 0.06);
+}
+
+/* ── Footer ────────────────────────────────────────────────────── */
+
+.login-footer {
+    text-align: center;
+    margin-top: 1.5rem;
+    font-size: 0.78rem;
+    color: rgba(255, 255, 255, 0.55);
+}
+
+/* ── Responsive ────────────────────────────────────────────────── */
+
+@media (max-width: 480px) {
+    .login-card { padding: 1.75rem 1.25rem 1.5rem; }
+    .modal-card { padding: 1.5rem 1.25rem; }
+}

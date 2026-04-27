@@ -1,0 +1,508 @@
+/* ──────────────────────────────────────────────────────────────────
+   TÓTEM — Módulo Pacientes
+   Diseño táctil, accesible y legible para pantalla táctil de kiosco.
+   Fuentes grandes, contraste alto, áreas de toque mínimo 64px.
+   ────────────────────────────────────────────────────────────────── */
+
+:root {
+    --c-bg:       #070c18;
+    --c-surface:  #0f1e35;
+    --c-card:     #162844;
+    --c-border:   #1e3a5f;
+    --c-cyan:     #4fc3f7;
+    --c-cyan2:    #29b6f6;
+    --c-white:    #e8f4fd;
+    --c-muted:    #7da7c4;
+    --c-pref:     #fbbf24;
+    --c-pref-bg:  rgba(251, 191, 36, 0.12);
+    --c-error:    #f87171;
+    --c-success:  #34d399;
+    --radius-lg:  20px;
+    --radius-md:  14px;
+    --shadow:     0 8px 40px rgba(0, 0, 0, 0.5);
+    --transition: 0.2s ease;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+    height: 100%;
+    overflow: hidden;
+}
+
+body {
+    background: var(--c-bg);
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    color: var(--c-white);
+    display: flex;
+    flex-direction: column;
+}
+
+/* ── Layout principal ──────────────────────────────────────────── */
+
+.totem-header {
+    background: var(--c-surface);
+    border-bottom: 2px solid var(--c-border);
+    padding: 1rem 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-shrink: 0;
+}
+
+.totem-title {
+    font-size: clamp(1.1rem, 3vw, 1.5rem);
+    font-weight: 700;
+    color: var(--c-cyan);
+    letter-spacing: 0.04em;
+}
+
+.totem-clock {
+    font-size: clamp(1rem, 2.5vw, 1.3rem);
+    font-weight: 600;
+    color: var(--c-muted);
+    font-variant-numeric: tabular-nums;
+}
+
+.totem-main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+    overflow: hidden;
+}
+
+/* ── Progreso de pasos ─────────────────────────────────────────── */
+
+.step-dots {
+    display: flex;
+    gap: 0.6rem;
+    margin-bottom: 1.5rem;
+}
+
+.step-dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: var(--c-border);
+    transition: background var(--transition), transform var(--transition);
+}
+
+.step-dot.active {
+    background: var(--c-cyan);
+    transform: scale(1.3);
+}
+
+.step-dot.done { background: var(--c-success); }
+
+/* ── Paso genérico ─────────────────────────────────────────────── */
+
+.step {
+    width: 100%;
+    max-width: 680px;
+    animation: fadeStep 0.35s ease;
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.25rem;
+}
+
+.step.active { display: flex; }
+
+@keyframes fadeStep {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Paso 0: Bienvenida ────────────────────────────────────────── */
+
+.welcome-title {
+    font-size: clamp(1.6rem, 5vw, 2.6rem);
+    font-weight: 800;
+    color: var(--c-white);
+    text-align: center;
+    line-height: 1.2;
+}
+
+.welcome-subtitle {
+    font-size: clamp(1rem, 3vw, 1.3rem);
+    color: var(--c-muted);
+    text-align: center;
+}
+
+.welcome-btns {
+    display: flex;
+    gap: 1.25rem;
+    flex-wrap: wrap;
+    justify-content: center;
+    width: 100%;
+    margin-top: 0.5rem;
+}
+
+/* ── Botones táctiles ──────────────────────────────────────────── */
+
+.btn-touch {
+    min-height: 80px;
+    min-width: 220px;
+    padding: 1.25rem 2rem;
+    border: none;
+    border-radius: var(--radius-lg);
+    font-size: clamp(1rem, 2.8vw, 1.3rem);
+    font-weight: 700;
+    cursor: pointer;
+    transition: transform var(--transition), box-shadow var(--transition), filter var(--transition);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    letter-spacing: 0.02em;
+}
+
+.btn-touch:active { transform: scale(0.96); }
+
+.btn-touch .icon { font-size: 2rem; }
+
+.btn-primary-touch {
+    background: linear-gradient(135deg, var(--c-cyan2), var(--c-cyan));
+    color: var(--c-bg);
+}
+
+.btn-primary-touch:hover { filter: brightness(1.1); }
+
+.btn-secondary-touch {
+    background: var(--c-card);
+    border: 2px solid var(--c-border);
+    color: var(--c-muted);
+}
+
+.btn-secondary-touch:hover {
+    border-color: var(--c-cyan);
+    color: var(--c-cyan);
+}
+
+.btn-outline-touch {
+    background: transparent;
+    border: 2px solid var(--c-border);
+    color: var(--c-muted);
+    min-height: 56px;
+    font-size: 1rem;
+    width: 100%;
+    border-radius: var(--radius-md);
+    padding: 0.75rem 1.5rem;
+}
+
+.btn-outline-touch:hover { border-color: var(--c-cyan); color: var(--c-cyan); }
+
+.btn-large {
+    min-height: 70px;
+    width: 100%;
+    max-width: 460px;
+    font-size: clamp(1.1rem, 3vw, 1.4rem);
+    border-radius: var(--radius-lg);
+}
+
+/* ── Formulario de datos ───────────────────────────────────────── */
+
+.form-panel {
+    background: var(--c-surface);
+    border: 1.5px solid var(--c-border);
+    border-radius: var(--radius-lg);
+    padding: 1.75rem 2rem;
+    width: 100%;
+}
+
+.form-panel h2 {
+    font-size: clamp(1.1rem, 3vw, 1.4rem);
+    color: var(--c-cyan);
+    margin-bottom: 1.25rem;
+    font-weight: 700;
+}
+
+.field-group {
+    margin-bottom: 1.1rem;
+}
+
+.field-group label {
+    display: block;
+    font-size: clamp(0.9rem, 2vw, 1rem);
+    font-weight: 600;
+    color: var(--c-muted);
+    margin-bottom: 0.45rem;
+    letter-spacing: 0.02em;
+}
+
+.field-group input {
+    width: 100%;
+    padding: 0.9rem 1.1rem;
+    background: var(--c-card);
+    border: 2px solid var(--c-border);
+    border-radius: var(--radius-md);
+    font-size: clamp(1rem, 2.5vw, 1.2rem);
+    color: var(--c-white);
+    outline: none;
+    transition: border-color var(--transition), box-shadow var(--transition);
+}
+
+.field-group input:focus {
+    border-color: var(--c-cyan);
+    box-shadow: 0 0 0 3px rgba(79, 195, 247, 0.15);
+}
+
+.field-group input.error { border-color: var(--c-error); }
+
+.field-hint {
+    font-size: 0.82rem;
+    color: var(--c-muted);
+    margin-top: 0.3rem;
+}
+
+.field-error {
+    font-size: 0.85rem;
+    color: var(--c-error);
+    margin-top: 0.35rem;
+    font-weight: 500;
+    display: none;
+}
+
+.field-error.visible { display: block; }
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+.preferente-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    background: var(--c-pref-bg);
+    border: 1.5px solid var(--c-pref);
+    color: var(--c-pref);
+    padding: 0.5rem 1rem;
+    border-radius: 50px;
+    font-size: 0.95rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+}
+
+/* ── Paso 2: Selección de servicio ─────────────────────────────── */
+
+.servicios-titulo {
+    font-size: clamp(1.1rem, 3vw, 1.5rem);
+    font-weight: 700;
+    color: var(--c-white);
+    text-align: center;
+}
+
+.servicios-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    width: 100%;
+}
+
+.servicio-btn {
+    background: var(--c-card);
+    border: 2px solid var(--c-border);
+    border-radius: var(--radius-lg);
+    padding: 1.1rem 0.75rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    transition: border-color var(--transition), background var(--transition), transform var(--transition);
+    min-height: 110px;
+    color: var(--c-white);
+}
+
+.servicio-btn:active { transform: scale(0.95); }
+.servicio-btn:hover  { border-color: var(--c-cyan); background: rgba(79, 195, 247, 0.07); }
+
+.servicio-btn .s-icon { font-size: 2.2rem; }
+
+.servicio-btn .s-nombre {
+    font-size: clamp(0.8rem, 2vw, 0.95rem);
+    font-weight: 700;
+    text-align: center;
+    line-height: 1.2;
+}
+
+.servicio-btn .s-letra {
+    font-size: 0.75rem;
+    color: var(--c-muted);
+    font-weight: 600;
+    letter-spacing: 0.06em;
+}
+
+/* ── Paso 3: Ticket ────────────────────────────────────────────── */
+
+.ticket-panel {
+    background: var(--c-surface);
+    border: 2px solid var(--c-border);
+    border-radius: var(--radius-lg);
+    padding: 2rem;
+    width: 100%;
+    text-align: center;
+    box-shadow: var(--shadow);
+}
+
+.ticket-panel .servicio-label {
+    font-size: clamp(0.9rem, 2.5vw, 1.1rem);
+    color: var(--c-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.ticket-numero {
+    font-size: clamp(4rem, 14vw, 7rem);
+    font-weight: 900;
+    color: var(--c-cyan);
+    letter-spacing: -0.02em;
+    line-height: 1;
+    margin: 0.3rem 0;
+    text-shadow: 0 0 40px rgba(79, 195, 247, 0.4);
+}
+
+.ticket-numero.pref {
+    color: var(--c-pref);
+    text-shadow: 0 0 40px rgba(251, 191, 36, 0.4);
+}
+
+.ticket-pref-label {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    color: var(--c-pref);
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-top: 0.3rem;
+}
+
+.ticket-pref-label.visible { display: flex; }
+
+.ticket-msg {
+    font-size: clamp(0.9rem, 2.5vw, 1.05rem);
+    color: var(--c-muted);
+    margin-top: 1.2rem;
+    line-height: 1.5;
+}
+
+/* ── Área oculta para impresión ────────────────────────────────── */
+
+.print-zone { display: none; }
+
+/* ── Botones inferiores del paso 3 ────────────────────────────── */
+
+.ticket-actions {
+    display: flex;
+    gap: 1rem;
+    width: 100%;
+    max-width: 480px;
+    justify-content: center;
+}
+
+.ticket-actions .btn-touch { flex: 1; min-height: 64px; }
+
+/* ── Spinner de carga ──────────────────────────────────────────── */
+
+.spinner {
+    width: 40px; height: 40px;
+    border: 4px solid var(--c-border);
+    border-top-color: var(--c-cyan);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin: 0 auto;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* ── Mensaje de error global ───────────────────────────────────── */
+
+.alert-error {
+    background: rgba(248, 113, 113, 0.1);
+    border: 1.5px solid var(--c-error);
+    color: var(--c-error);
+    border-radius: var(--radius-md);
+    padding: 0.75rem 1rem;
+    font-size: 0.95rem;
+    font-weight: 500;
+    text-align: center;
+    width: 100%;
+    display: none;
+}
+
+.alert-error.visible { display: block; }
+
+/* ══════════════════════════════════════════════════════════════════
+   ESTILOS DE IMPRESIÓN TÉRMICA (80mm)
+   El navegador aplica esto al imprimir con Ctrl+P o window.print().
+   Configuración recomendada para el técnico:
+     - Tamaño de papel: 80mm x Auto (configurar en el SO)
+     - Márgenes: Ninguno / Mínimo
+     - Usar papel de fondo: Activado en Chrome
+     - Para impresión silenciosa (sin diálogo): Chrome con --kiosk-printing
+   ══════════════════════════════════════════════════════════════════ */
+
+@media print {
+    @page {
+        size: 80mm auto;
+        margin: 3mm 4mm;
+    }
+
+    body * { visibility: hidden !important; }
+
+    .print-zone,
+    .print-zone * {
+        visibility: visible !important;
+    }
+
+    .print-zone {
+        display: block !important;
+        position: fixed;
+        inset: 0;
+        background: #fff;
+        font-family: 'Courier New', monospace;
+        color: #000;
+        font-size: 12pt;
+    }
+
+    .pz-header {
+        text-align: center;
+        border-bottom: 1px dashed #000;
+        padding-bottom: 4mm;
+        margin-bottom: 4mm;
+    }
+
+    .pz-cesfam    { font-size: 10pt; font-weight: bold; letter-spacing: 0.05em; }
+    .pz-title     { font-size: 8pt; color: #555; }
+    .pz-servicio  { font-size: 12pt; font-weight: bold; margin: 3mm 0 1mm; }
+    .pz-ticket    { font-size: 36pt; font-weight: 900; text-align: center; letter-spacing: -1px; }
+    .pz-pref      { font-size: 10pt; font-weight: bold; text-align: center; }
+    .pz-sep       { border: none; border-top: 1px dashed #000; margin: 3mm 0; }
+    .pz-msg       { font-size: 8.5pt; text-align: center; line-height: 1.5; }
+    .pz-fecha     { font-size: 8pt; color: #555; text-align: center; margin-top: 3mm; }
+}
+
+/* ── Responsive táctil ─────────────────────────────────────────── */
+
+@media (max-width: 600px) {
+    .servicios-grid { grid-template-columns: repeat(2, 1fr); }
+    .form-row       { grid-template-columns: 1fr; }
+    .welcome-btns   { flex-direction: column; align-items: center; }
+}
+
+@media (max-height: 600px) {
+    .totem-main { padding: 0.75rem; }
+    .step        { gap: 0.75rem; }
+    .form-panel  { padding: 1.1rem 1.25rem; }
+}

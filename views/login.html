@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ingreso Funcionarios — CESFAM</title>
+    <link rel="stylesheet" href="assets/css/login.css">
+</head>
+<body>
+
+    <!-- ── Tarjeta de login ─────────────────────────────────────── -->
+    <div class="login-card">
+        <div class="login-header">
+            <div class="login-logo" aria-hidden="true">
+                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                </svg>
+            </div>
+            <h1>Ingreso Funcionarios</h1>
+            <p>Centro de Salud Familiar</p>
+        </div>
+
+        <form id="form-rut" novalidate>
+            <div class="form-group">
+                <label for="input-rut">RUT del funcionario</label>
+                <input
+                    type="text"
+                    id="input-rut"
+                    name="rut"
+                    placeholder="12.345.678-9"
+                    maxlength="12"
+                    autocomplete="off"
+                    inputmode="text"
+                    aria-describedby="rut-hint rut-error"
+                >
+                <span class="input-hint" id="rut-hint">Ingrese su RUT sin puntos ni guión, o con formato XX.XXX.XXX-X</span>
+                <span class="input-error" id="rut-error" role="alert"></span>
+            </div>
+
+            <button type="submit" class="btn btn-primary" id="btn-continuar">
+                Continuar →
+            </button>
+        </form>
+    </div>
+
+    <p class="login-footer">CESFAM — Sistema de Gestión de Turnos</p>
+
+    <!-- ── Modal de selección de módulo ────────────────────────── -->
+    <div class="modal-overlay" id="modal-seleccion" hidden aria-modal="true" role="dialog" aria-labelledby="modal-titulo">
+        <div class="modal-card">
+            <h2 id="modal-titulo">Seleccione su módulo</h2>
+            <p class="modal-bienvenida">Bienvenido/a, RUT: <span class="rut-display" id="modal-rut"></span></p>
+
+            <div class="form-group">
+                <label for="select-modulo">Módulo de atención</label>
+                <select id="select-modulo" aria-required="true">
+                    <option value="" disabled selected>Cargando módulos…</option>
+                </select>
+                <span class="input-error" id="modulo-error" role="alert"></span>
+            </div>
+
+            <div class="form-group">
+                <label>Modo de atención</label>
+                <div class="modos-grid" id="modos-grid" role="radiogroup" aria-label="Modo de atención"></div>
+            </div>
+
+            <div class="modal-actions">
+                <button class="btn btn-outline" id="btn-cancelar">Cancelar</button>
+                <button class="btn btn-primary" id="btn-ingresar">Ingresar al sistema</button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="assets/js/login.js"></script>
+</body>
+</html>

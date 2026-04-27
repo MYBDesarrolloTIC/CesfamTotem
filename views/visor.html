@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>Sala de Espera — CESFAM</title>
+    <link rel="stylesheet" href="assets/css/visor.css" />
+</head>
+<body>
+
+    <header class="visor-header">
+        <h1 class="visor-titulo">CESFAM &mdash; Sala de Espera</h1>
+        <div class="visor-reloj" id="reloj" aria-live="polite"></div>
+    </header>
+
+    <main class="visor-grid">
+
+        <section class="area-card" id="area-some">
+            <h2 class="area-titulo">SOME</h2>
+            <div class="modulo-contenedor" aria-label="Turnos SOME"></div>
+        </section>
+
+        <section class="area-card" id="area-farmacia">
+            <h2 class="area-titulo">Farmacia</h2>
+            <div class="modulo-contenedor" aria-label="Turnos Farmacia"></div>
+        </section>
+
+        <section class="area-card" id="area-pedir-hora">
+            <h2 class="area-titulo">Pedir Hora</h2>
+            <div class="modulo-contenedor" aria-label="Turnos Pedir Hora"></div>
+        </section>
+
+        <section class="area-card" id="area-examenes">
+            <h2 class="area-titulo">Ex&aacute;menes</h2>
+            <div class="modulo-contenedor" aria-label="Turnos Exámenes"></div>
+        </section>
+
+        <section class="area-card" id="area-morbilidad">
+            <h2 class="area-titulo">Morbilidad</h2>
+            <div class="modulo-contenedor" aria-label="Turnos Morbilidad"></div>
+        </section>
+
+        <section class="area-card" id="area-vacunatorio">
+            <h2 class="area-titulo">Vacunatorio</h2>
+            <div class="modulo-contenedor" aria-label="Turnos Vacunatorio"></div>
+        </section>
+
+    </main>
+
+    <script type="module" src="assets/js/visor.js"></script>
+</body>
+</html>

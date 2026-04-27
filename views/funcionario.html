@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Funcionario — CESFAM</title>
+  <link rel="stylesheet" href="assets/css/funcionario.css" />
+</head>
+<body>
+
+  <!-- ══ MODAL SALTADOS (CSS :target) ══════════════════════════════════════ -->
+  <div id="modal-saltados" class="modal-backdrop">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h2>Turnos Saltados — Hoy</h2>
+        <a href="#" class="btn-icon" aria-label="Cerrar">✕</a>
+      </div>
+      <ul id="saltados-lista" class="modal-body saltados-lista">
+        <li class="empty-msg">Seleccione un módulo para ver los saltados.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ══ HEADER ════════════════════════════════════════════════════════════ -->
+  <header class="app-header">
+    <div class="header-brand">
+      <span class="header-cross">✚</span>
+      <span class="header-title">CESFAM</span>
+    </div>
+    <div class="header-modulo-wrap">
+      <label for="modulos" class="header-select-label">Módulo de Atención</label>
+      <select id="modulos">
+        <option value="" disabled selected>Cargando módulos…</option>
+      </select>
+      <span id="modulos-error" class="header-error" hidden></span>
+    </div>
+  </header>
+
+  <!-- ══ DASHBOARD ═════════════════════════════════════════════════════════ -->
+  <main class="dashboard">
+
+    <!-- ── Izquierda: Llamado Actual ──────────────────────────────────── -->
+    <section class="card card-actual">
+      <h2 class="card-title">Llamado Actual</h2>
+
+      <div class="ticket-principal">
+        <span id="ticket-numero" class="ticket-numero">—</span>
+        <span id="ticket-badge" class="badge badge-preferencial" hidden>Preferencial</span>
+      </div>
+
+      <dl class="turno-meta">
+        <dt>RUT</dt>
+        <dd id="turno-rut">—</dd>
+        <dt>Espera</dt>
+        <dd id="turno-espera">—</dd>
+      </dl>
+
+      <div class="card-actions">
+        <button id="btn-llamar"   class="btn btn-primary   btn-action">▶ Llamar</button>
+        <button id="btn-rellamar" class="btn btn-secondary btn-action" disabled>
+          ↺ Volver a Llamar <span id="rellamadas-counter" class="counter-badge">0/2</span>
+        </button>
+        <button id="btn-saltar"   class="btn btn-warning   btn-action" disabled>⏭ Saltar</button>
+        <button id="btn-detalles" class="btn btn-outline   btn-action" disabled>Ver Detalles</button>
+      </div>
+    </section>
+
+    <!-- ── Derecha: Cola ──────────────────────────────────────────────── -->
+    <section class="card card-cola">
+      <h2 class="card-title">Próximos en Espera</h2>
+
+      <ul id="cola">
+        <li class="cola-empty">Sin turnos en espera</li>
+      </ul>
+
+      <a id="btn-saltados" href="#modal-saltados" class="btn btn-outline btn-full">Ver Saltados</a>
+    </section>
+
+  </main>
+
+  <script src="assets/js/funcionario.js"></script>
+</body>
+</html>

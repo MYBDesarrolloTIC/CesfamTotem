@@ -1,0 +1,203 @@
+/* ================================================
+   Visor Sala de Espera — CESFAM
+   Diseño oscuro, alto contraste, legible desde TV
+   ================================================ */
+
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+:root {
+    --color-fondo:       #070c18;
+    --color-superficie:  #0f1a30;
+    --color-borde:       #1e3a5f;
+    --color-primario:    #4fc3f7;
+    --color-preferencial:#ffd54f;
+    --color-texto:       #e8f4fd;
+    --color-texto-suave: #7bafd4;
+    --color-vacio:       #3a5272;
+    --radio-tarjeta:     12px;
+    --sombra:            0 4px 24px rgba(0, 0, 0, 0.6);
+}
+
+html, body {
+    height: 100%;
+    font-family: 'Segoe UI', 'Arial', sans-serif;
+    background-color: var(--color-fondo);
+    color: var(--color-texto);
+    overflow: hidden;
+}
+
+/* ---- HEADER ---- */
+.visor-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: clamp(0.5rem, 1.5vh, 1.2rem) clamp(1rem, 3vw, 2.5rem);
+    background-color: var(--color-superficie);
+    border-bottom: 2px solid var(--color-borde);
+    box-shadow: var(--sombra);
+}
+
+.visor-titulo {
+    font-size: clamp(1.4rem, 3vw, 2.2rem);
+    font-weight: 700;
+    color: var(--color-primario);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+}
+
+.visor-reloj {
+    font-size: clamp(1.6rem, 3.5vw, 2.6rem);
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    color: var(--color-texto);
+    letter-spacing: 0.04em;
+    min-width: 7ch;
+    text-align: right;
+}
+
+/* ---- GRID PRINCIPAL  3 columnas × 2 filas ---- */
+.visor-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    gap: clamp(0.6rem, 1.5vw, 1.2rem);
+    padding: clamp(0.6rem, 1.5vw, 1.2rem);
+    height: calc(100vh - var(--header-h, 72px));
+}
+
+/* ---- TARJETA DE ÁREA ---- */
+.area-card {
+    background-color: var(--color-superficie);
+    border: 1px solid var(--color-borde);
+    border-radius: var(--radio-tarjeta);
+    box-shadow: var(--sombra);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.area-titulo {
+    padding: clamp(0.5rem, 1.2vh, 1rem) clamp(0.8rem, 2vw, 1.5rem);
+    font-size: clamp(1.1rem, 2.2vw, 1.8rem);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--color-primario);
+    background-color: rgba(79, 195, 247, 0.07);
+    border-bottom: 1px solid var(--color-borde);
+    flex-shrink: 0;
+}
+
+/* ---- MÓDULO CONTENEDOR (layout 70/30) ---- */
+.modulo-contenedor {
+    flex: 1;
+    display: flex;
+    flex-direction: row;
+    overflow: hidden;
+}
+
+/* ---- TICKET DESTACADO — sección izquierda ~70% ---- */
+.ticket-destacado {
+    flex: 7;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: clamp(0.3rem, 1vh, 0.8rem);
+    padding: clamp(0.5rem, 2vh, 1.5rem) clamp(0.8rem, 2vw, 1.5rem);
+    border-right: 1px solid var(--color-borde);
+}
+
+.ticket-destacado.preferencial {
+    background-color: rgba(255, 213, 79, 0.05);
+    border-right-color: var(--color-preferencial);
+}
+
+.ticket-destacado__numero {
+    font-size: clamp(3.5rem, 9vw, 7.5rem);
+    font-weight: 900;
+    color: var(--color-texto);
+    letter-spacing: 0.04em;
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
+}
+
+.ticket-destacado.preferencial .ticket-destacado__numero {
+    color: var(--color-preferencial);
+    text-shadow: 0 0 28px rgba(255, 213, 79, 0.45);
+}
+
+.ticket-destacado__box {
+    font-size: clamp(0.85rem, 1.8vw, 1.5rem);
+    font-weight: 600;
+    color: var(--color-texto-suave);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+
+/* ---- LISTA SECUNDARIOS — sección derecha ~30% ---- */
+.lista-secundarios {
+    flex: 3;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 0;
+    padding: clamp(0.5rem, 1.5vh, 1rem) clamp(0.5rem, 1.5vw, 1rem);
+    overflow: hidden;
+}
+
+.ticket-secundario {
+    font-size: clamp(1.2rem, 2.8vw, 2.2rem);
+    font-weight: 700;
+    color: var(--color-texto-suave);
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.03em;
+    text-align: center;
+    padding: clamp(0.25rem, 0.8vh, 0.55rem) 0;
+    border-bottom: 1px solid var(--color-borde);
+}
+
+.ticket-secundario:last-child {
+    border-bottom: none;
+}
+
+.ticket-secundario.preferencial {
+    color: var(--color-preferencial);
+}
+
+/* ---- ESTADO VACÍO ---- */
+.ticket-vacio {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: clamp(0.9rem, 1.8vw, 1.3rem);
+    color: var(--color-vacio);
+    font-style: italic;
+    letter-spacing: 0.05em;
+}
+
+/* ---- RESPONSIVE TV / FULLSCREEN ---- */
+@media (max-width: 1280px) {
+    .visor-grid {
+        grid-template-columns: repeat(2, 1fr);
+        grid-template-rows: repeat(3, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .visor-grid {
+        grid-template-columns: 1fr;
+        grid-template-rows: unset;
+        overflow-y: auto;
+        height: auto;
+    }
+    html, body {
+        overflow: auto;
+    }
+}

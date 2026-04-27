@@ -6,7 +6,7 @@ class Conexion {
     private $host = "localhost";
     private $db   = "bdcesfamtotem";
     private $user = "root";
-    private $pass = "root"; // Cambia esto si tu XAMPP no tiene contraseña
+    private $pass = "root";
     private $charset = "utf8mb4";
 
     // Constructor privado para evitar 'new Conexion()'

@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tótem de Atención — CESFAM</title>
+    <link rel="stylesheet" href="assets/css/totem.css">
+</head>
+<body>
+
+    <!-- ── Encabezado ──────────────────────────────────────────── -->
+    <header class="totem-header">
+        <span class="totem-title">🏥 CESFAM — Solicite su número</span>
+        <span class="totem-clock" id="reloj" aria-live="off"></span>
+    </header>
+
+    <!-- ── Contenido principal ─────────────────────────────────── -->
+    <main class="totem-main">
+        <!-- Indicador de pasos -->
+        <div class="step-dots" role="progressbar" aria-valuemin="0" aria-valuemax="3" aria-valuenow="0">
+            <div class="step-dot active" data-step="0"></div>
+            <div class="step-dot"        data-step="1"></div>
+            <div class="step-dot"        data-step="2"></div>
+            <div class="step-dot"        data-step="3"></div>
+        </div>
+
+        <!-- ══════════════════════════════════════════════════════
+             PASO 0 — Bienvenida
+        ══════════════════════════════════════════════════════════ -->
+        <section class="step active" id="step-0" aria-label="Bienvenida">
+            <h1 class="welcome-title">¡Bienvenido/a al CESFAM!</h1>
+            <p class="welcome-subtitle">Seleccione cómo desea continuar</p>
+
+            <div class="welcome-btns">
+                <button class="btn-touch btn-primary-touch" id="btn-con-rut">
+                    <span class="icon">🪪</span>
+                    Tengo RUT
+                </button>
+                <button class="btn-touch btn-secondary-touch" id="btn-sin-rut">
+                    <span class="icon">👤</span>
+                    No tengo RUT
+                </button>
+            </div>
+        </section>
+
+        <!-- ══════════════════════════════════════════════════════
+             PASO 1 — Datos del paciente (solo con RUT)
+        ══════════════════════════════════════════════════════════ -->
+        <section class="step" id="step-1" aria-label="Ingreso de datos">
+            <div class="form-panel">
+                <h2>Ingrese sus datos</h2>
+
+                <div class="field-group">
+                    <label for="t-rut">RUT</label>
+                    <input
+                        type="text"
+                        id="t-rut"
+                        placeholder="12.345.678-9"
+                        maxlength="12"
+                        autocomplete="off"
+                        inputmode="text"
+                        aria-describedby="t-rut-hint t-rut-error"
+                    >
+                    <span class="field-hint" id="t-rut-hint">Sin puntos, o con formato XX.XXX.XXX-X</span>
+                    <span class="field-error" id="t-rut-error" role="alert"></span>
+                </div>
+
+                <div class="field-group">
+                    <label for="t-dob">Fecha de nacimiento</label>
+                    <input
+                        type="date"
+                        id="t-dob"
+                        max=""
+                        aria-describedby="t-dob-error"
+                    >
+                    <span class="field-error" id="t-dob-error" role="alert"></span>
+                </div>
+
+                <div id="preferente-badge" class="preferente-badge" hidden aria-live="polite">
+                    ⭐ Atención Preferencial
+                </div>
+            </div>
+
+            <div class="alert-error" id="step1-error" role="alert"></div>
+
+            <div style="display:flex; gap:0.75rem; width:100%; max-width:480px;">
+                <button class="btn-outline-touch" id="btn-volver-0">← Volver</button>
+                <button class="btn-touch btn-primary-touch btn-large" id="btn-verificar">
+                    Verificar datos →
+                </button>
+            </div>
+        </section>
+
+        <!-- ══════════════════════════════════════════════════════
+             PASO 2 — Selección de servicio
+        ══════════════════════════════════════════════════════════ -->
+        <section class="step" id="step-2" aria-label="Selección de servicio">
+            <p class="servicios-titulo">¿Qué atención necesita?</p>
+
+            <div class="alert-error" id="step2-error" role="alert"></div>
+
+            <div class="servicios-grid" id="servicios-grid" aria-label="Servicios disponibles">
+                <!-- Se rellena dinámicamente con JS -->
+                <div class="spinner" aria-label="Cargando servicios…"></div>
+            </div>
+
+            <button class="btn-outline-touch" id="btn-volver-1">← Volver</button>
+        </section>
+
+        <!-- ══════════════════════════════════════════════════════
+             PASO 3 — Ticket generado
+        ══════════════════════════════════════════════════════════ -->
+        <section class="step" id="step-3" aria-label="Ticket generado">
+            <div class="ticket-panel" role="status" aria-live="assertive">
+                <p class="servicio-label" id="ticket-servicio">—</p>
+                <div class="ticket-numero" id="ticket-numero">—</div>
+                <div class="ticket-pref-label" id="ticket-pref">⭐ Preferencial</div>
+                <p class="ticket-msg">
+                    Por favor, espere en la sala hasta<br>que su número sea llamado.
+                </p>
+            </div>
+
+            <div class="ticket-actions">
+                <button class="btn-touch btn-primary-touch" id="btn-imprimir">
+                    <span class="icon">🖨️</span>
+                    Imprimir ticket
+                </button>
+                <button class="btn-touch btn-secondary-touch" id="btn-nuevo">
+                    <span class="icon">🏠</span>
+                    Inicio
+                </button>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ══════════════════════════════════════════════════════════
+         ZONA DE IMPRESIÓN TÉRMICA (oculta en pantalla)
+         Solo visible al imprimir (CSS @media print).
+    ══════════════════════════════════════════════════════════════ -->
+    <div class="print-zone" id="print-zone" aria-hidden="true">
+        <div class="pz-header">
+            <div class="pz-cesfam">CESFAM</div>
+            <div class="pz-title">Centro de Salud Familiar</div>
+        </div>
+        <div class="pz-servicio" id="pz-servicio">—</div>
+        <div class="pz-ticket"   id="pz-ticket">—</div>
+        <div class="pz-pref"     id="pz-pref" hidden>⭐ ATENCIÓN PREFERENCIAL</div>
+        <hr class="pz-sep">
+        <div class="pz-msg">
+            Por favor espere en sala<br>hasta que su número sea llamado
+        </div>
+        <div class="pz-fecha" id="pz-fecha"></div>
+    </div>
+
+    <script type="module" src="assets/js/totem.js"></script>
+</body>
+</html>

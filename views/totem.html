@@ -33,7 +33,13 @@
 
             <div class="welcome-btns">
                 <button class="btn-touch btn-primary-touch" id="btn-con-rut">
-                    <span class="icon">🪪</span>
+                    <svg class="icon-svg" viewBox="0 0 48 36" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                        <rect x="2" y="2" width="44" height="32" rx="4" stroke="currentColor" stroke-width="3" fill="none"/>
+                        <circle cx="14" cy="18" r="5.5" stroke="currentColor" stroke-width="2.5" fill="none"/>
+                        <line x1="25" y1="11" x2="43" y2="11" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+                        <line x1="25" y1="19" x2="39" y2="19" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+                        <line x1="25" y1="27" x2="34" y2="27" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
                     Tengo RUT
                 </button>
                 <button class="btn-touch btn-secondary-touch" id="btn-sin-rut">
@@ -58,7 +64,8 @@
                         placeholder="12.345.678-9"
                         maxlength="12"
                         autocomplete="off"
-                        inputmode="text"
+                        inputmode="none"
+                        readonly
                         aria-describedby="t-rut-hint t-rut-error"
                     >
                     <span class="field-hint" id="t-rut-hint">Sin puntos, o con formato XX.XXX.XXX-X</span>
@@ -68,9 +75,13 @@
                 <div class="field-group">
                     <label for="t-dob">Fecha de nacimiento</label>
                     <input
-                        type="date"
+                        type="text"
                         id="t-dob"
-                        max=""
+                        placeholder="DD / MM / AAAA"
+                        maxlength="10"
+                        autocomplete="off"
+                        inputmode="none"
+                        readonly
                         aria-describedby="t-dob-error"
                     >
                     <span class="field-error" id="t-dob-error" role="alert"></span>
@@ -78,6 +89,36 @@
 
                 <div id="preferente-badge" class="preferente-badge" hidden aria-live="polite">
                     ⭐ Atención Preferencial
+                </div>
+            </div>
+
+            <!-- Teclado táctil embebido dentro del paso 1 -->
+            <div class="vkbd" id="vkbd" aria-hidden="true">
+                <div class="vkbd-header">
+                    <span class="vkbd-label" id="vkbd-label">⌨ Ingrese su RUT</span>
+                    <span class="vkbd-preview" id="vkbd-preview">—</span>
+                </div>
+                <div class="vkbd-keys">
+                    <div class="vkbd-row">
+                        <button class="vk" data-val="7">7</button>
+                        <button class="vk" data-val="8">8</button>
+                        <button class="vk" data-val="9">9</button>
+                    </div>
+                    <div class="vkbd-row">
+                        <button class="vk" data-val="4">4</button>
+                        <button class="vk" data-val="5">5</button>
+                        <button class="vk" data-val="6">6</button>
+                    </div>
+                    <div class="vkbd-row">
+                        <button class="vk" data-val="1">1</button>
+                        <button class="vk" data-val="2">2</button>
+                        <button class="vk" data-val="3">3</button>
+                    </div>
+                    <div class="vkbd-row">
+                        <button class="vk vk-k" id="vk-k" data-val="K" title="Dígito verificador K">K</button>
+                        <button class="vk" data-val="0">0</button>
+                        <button class="vk vk-del" data-val="BACK" aria-label="Borrar">⌫</button>
+                    </div>
                 </div>
             </div>
 
@@ -108,7 +149,7 @@
         </section>
 
         <!-- ══════════════════════════════════════════════════════
-             PASO 3 — Ticket generado
+             PASO 3 — Ticket generado e impreso
         ══════════════════════════════════════════════════════════ -->
         <section class="step" id="step-3" aria-label="Ticket generado">
             <div class="ticket-panel" role="status" aria-live="assertive">
@@ -120,38 +161,20 @@
                 </p>
             </div>
 
+            <div class="ticket-impreso-ok" aria-live="polite">
+                <span class="ticket-impreso-icono" aria-hidden="true">✓</span>
+                Su ticket ha sido impreso — retírelo de la impresora
+            </div>
+
             <div class="ticket-actions">
-                <button class="btn-touch btn-primary-touch" id="btn-imprimir">
-                    <span class="icon">🖨️</span>
-                    Imprimir ticket
-                </button>
-                <button class="btn-touch btn-secondary-touch" id="btn-nuevo">
+                <button class="btn-touch btn-secondary-touch btn-large" id="btn-nuevo">
                     <span class="icon">🏠</span>
-                    Inicio
+                    Volver al inicio
                 </button>
             </div>
         </section>
 
     </main>
-
-    <!-- ══════════════════════════════════════════════════════════
-         ZONA DE IMPRESIÓN TÉRMICA (oculta en pantalla)
-         Solo visible al imprimir (CSS @media print).
-    ══════════════════════════════════════════════════════════════ -->
-    <div class="print-zone" id="print-zone" aria-hidden="true">
-        <div class="pz-header">
-            <div class="pz-cesfam">CESFAM</div>
-            <div class="pz-title">Centro de Salud Familiar</div>
-        </div>
-        <div class="pz-servicio" id="pz-servicio">—</div>
-        <div class="pz-ticket"   id="pz-ticket">—</div>
-        <div class="pz-pref"     id="pz-pref" hidden>⭐ ATENCIÓN PREFERENCIAL</div>
-        <hr class="pz-sep">
-        <div class="pz-msg">
-            Por favor espere en sala<br>hasta que su número sea llamado
-        </div>
-        <div class="pz-fecha" id="pz-fecha"></div>
-    </div>
 
     <script type="module" src="assets/js/totem.js"></script>
 </body>

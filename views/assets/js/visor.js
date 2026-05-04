@@ -1,7 +1,12 @@
 import ApiService from '../../../model/api.js';
 
-const AREAS = ['SOME', 'Farmacia', 'Pedir Hora', 'Exámenes', 'Morbilidad', 'Vacunatorio'];
+// URL del endpoint SSE — resuelto relativo a este módulo
+const SSE_URL = new URL('../../../controller/visor_sse.php', import.meta.url).href;
+
+const AREAS      = ['SOME', 'Farmacia', 'Pedir Hora', 'Exámenes', 'Morbilidad', 'Vacunatorio'];
 const POLLING_MS = 3000;
+
+// ── Helpers ───────────────────────────────────────────────────────────────────
 
 function slugify(area) {
     return area
@@ -21,39 +26,36 @@ function esc(str) {
     return d.innerHTML;
 }
 
-function formatearTicket(ticket) {
-    const numero = ticket.ticket_numero;
-    return ticket.es_preferencial ? `${numero}P` : numero;
-}
+// ── Render ────────────────────────────────────────────────────────────────────
 
 function renderizarArea(area, tickets) {
-    const id = `area-${slugify(area)}`;
-    const contenedor = document.getElementById(id);
+    const contenedor = document.querySelector(`#area-${slugify(area)} .modulo-contenedor`);
     if (!contenedor) return;
 
-    const cuerpo = contenedor.querySelector('.modulo-contenedor');
-    if (!cuerpo) return;
-
     if (!tickets || tickets.length === 0) {
-        cuerpo.innerHTML = '<p class="ticket-vacio">— Sin llamados —</p>';
+        contenedor.innerHTML = '<p class="ticket-vacio">— Sin llamados —</p>';
         return;
     }
 
-    const actual = tickets[0];
+    const actual     = tickets[0];
     const siguientes = tickets.slice(1, 4);
-    const codigoActual = esc(formatearTicket(actual));
     const clasePrefActual = actual.es_preferencial ? ' preferencial' : '';
 
-    const itemsSiguientes = siguientes.length > 0
-        ? siguientes.map(t => {
-            const clasePref = t.es_preferencial ? ' preferencial' : '';
-            return `<li class="ticket-secundario${clasePref}">${esc(formatearTicket(t))}</li>`;
-        }).join('')
-        : '';
+    const itemsSiguientes = siguientes
+        .map(t => {
+            const cp = t.es_preferencial ? ' preferencial' : '';
+            const num = t.es_preferencial ? `${esc(t.ticket_numero)}P` : esc(t.ticket_numero);
+            return `<li class="ticket-secundario${cp}">${num}</li>`;
+        })
+        .join('');
 
-    cuerpo.innerHTML = `
+    const numActual = actual.es_preferencial
+        ? `${esc(actual.ticket_numero)}P`
+        : esc(actual.ticket_numero);
+
+    contenedor.innerHTML = `
         <div class="ticket-destacado${clasePrefActual}">
-            <span class="ticket-destacado__numero">${codigoActual}</span>
+            <span class="ticket-destacado__numero">${numActual}</span>
             <span class="ticket-destacado__box">${esc(actual.box_asignado)}</span>
         </div>
         <ul class="lista-secundarios" aria-label="Próximos turnos">
@@ -61,34 +63,70 @@ function renderizarArea(area, tickets) {
         </ul>`;
 }
 
+function renderizarTodo(data) {
+    AREAS.forEach(area => renderizarArea(area, data[area]));
+}
+
+// ── Modo SSE (tiempo real) ────────────────────────────────────────────────────
+
+function conectarSSE() {
+    const es = new EventSource(SSE_URL);
+
+    es.addEventListener('visor', e => {
+        try {
+            renderizarTodo(JSON.parse(e.data));
+        } catch { /* JSON malformado — ignorar */ }
+    });
+
+    es.addEventListener('error', () => {
+        // Si SSE falla (red, timeout Apache) → cerrar y caer al polling
+        es.close();
+        console.warn('[Visor] SSE desconectado, cambiando a polling…');
+        setTimeout(conectarPolling, 3000);
+    });
+}
+
+// ── Modo Polling (fallback) ───────────────────────────────────────────────────
+
 async function actualizarVisor() {
     try {
         const respuesta = await ApiService.get('visor');
-        const data = respuesta.data ?? {};
-        AREAS.forEach(area => renderizarArea(area, data[area]));
+        renderizarTodo(respuesta.data ?? {});
     } catch (error) {
         console.error('[Visor] Error al actualizar:', error.message);
     }
 }
 
-function iniciarReloj() {
-    const reloj = document.getElementById('reloj');
-    if (!reloj) return;
+function conectarPolling() {
+    actualizarVisor();
+    setInterval(actualizarVisor, POLLING_MS);
+}
 
-    const actualizar = () => {
+// ── Reloj ─────────────────────────────────────────────────────────────────────
+
+function iniciarReloj() {
+    const reloj   = document.getElementById('reloj');
+    if (!reloj) return;
+    const tick = () => {
         reloj.textContent = new Date().toLocaleTimeString('es-CL', {
-            hour: '2-digit',
-            minute: '2-digit',
-            second: '2-digit',
+            hour: '2-digit', minute: '2-digit', second: '2-digit',
         });
     };
-
-    actualizar();
-    setInterval(actualizar, 1000);
+    tick();
+    setInterval(tick, 1000);
 }
+
+// ── Arranque ──────────────────────────────────────────────────────────────────
 
 document.addEventListener('DOMContentLoaded', () => {
     iniciarReloj();
-    actualizarVisor();
-    setInterval(actualizarVisor, POLLING_MS);
+
+    // SSE disponible en todos los navegadores modernos; si no, caer a polling
+    if (typeof EventSource !== 'undefined') {
+        conectarSSE();
+        // Primera carga inmediata vía API para no esperar el primer evento SSE
+        actualizarVisor();
+    } else {
+        conectarPolling();
+    }
 });

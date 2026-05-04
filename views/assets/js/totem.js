@@ -2,57 +2,6 @@
 
 import TotemAPI from '../../../model/totemAPI.js';
 
-// ══════════════════════════════════════════════════════════════════
-// CONFIGURACIÓN DE IMPRESIÓN TÉRMICA
-// ══════════════════════════════════════════════════════════════════
-//
-// MÉTODO IMPLEMENTADO — window.print() con CSS @media print
-// ─────────────────────────────────────────────────────────────────
-// La zona de impresión (#print-zone en el HTML) se hace visible solo
-// al imprimir. El CSS en totem.css la formatea para papel de 80mm.
-//
-// PASOS PARA EL TÉCNICO (impresora térmica USB/Bluetooth):
-//   1. Instale el driver de la impresora (ej. EPSON TM-T20, BIXOLON SRP-350,
-//      Star TSP100, Citizen CT-S310).
-//   2. En Windows: Dispositivos e impresoras → clic derecho en la impresora
-//      térmica → Propiedades de impresora → Preferencias:
-//      - Tamaño de papel: seleccione el rol de 80mm (o créelo como Custom: 80mm x 200mm).
-//      - Márgenes: Mínimo.
-//   3. En Google Chrome, abra chrome://settings/printers y defina la impresora
-//      térmica como predeterminada.
-//   4. Para IMPRESIÓN SILENCIOSA (sin diálogo de confirmación), lance Chrome
-//      con el flag: --kiosk-printing
-//      Ejemplo de acceso directo: "C:\Program Files\Google\Chrome\Application\chrome.exe"
-//                                  --kiosk-printing --kiosk http://localhost/CesfamTotem/views/totem.html
-//
-// MÉTODO ALTERNATIVO — QZ Tray (para producción, sin diálogo)
-// ─────────────────────────────────────────────────────────────────
-// QZ Tray es un programa Java que permite imprimir directamente
-// desde el navegador sin mostrar ningún diálogo de confirmación.
-//
-//   1. Descargue QZ Tray: https://qz.io/download/
-//   2. Instálelo en el equipo del tótem y ejecútelo al iniciar Windows
-//      (agréguelo al inicio automático).
-//   3. Descargue qz-tray.js desde: https://github.com/qzind/tray/releases
-//      y colóquelo en views/assets/js/qz-tray.js
-//   4. Agregue en totem.html ANTES del script totem.js:
-//      <script src="assets/js/qz-tray.js"></script>
-//   5. En este archivo, cambie USE_QZ_TRAY = true (ver abajo)
-//      y configure THERMAL_PRINTER_NAME con el nombre exacto de la impresora
-//      (tal como aparece en Windows → Dispositivos e impresoras).
-//
-// MÉTODO AVANZADO — ESC/POS directo (logos, corte automático de papel)
-// ─────────────────────────────────────────────────────────────────
-// Si necesita comandos ESC/POS crudos (logo de bitmap, corte automático,
-// cajón de dinero), use QZ Tray en modo 'raw':
-//   - Docs: https://qz.io/wiki/2.0-raw-printing
-//   - Referencia ESC/POS: https://reference.epson-biz.com/modules/ref_escpos/
-//
-// ══════════════════════════════════════════════════════════════════
-
-const USE_QZ_TRAY         = false;           // Cambiar a true para producción con QZ Tray
-const THERMAL_PRINTER_NAME = 'TM-T20';       // Nombre exacto de la impresora en Windows
-
 // ── Estado ────────────────────────────────────────────────────────────────────
 const state = {
     tieneRut:    false,
@@ -93,15 +42,13 @@ const btnVolver1     = el('btn-volver-1');
 const ticketServicio = el('ticket-servicio');
 const ticketNumero   = el('ticket-numero');
 const ticketPref     = el('ticket-pref');
-const btnImprimir    = el('btn-imprimir');
 const btnNuevo       = el('btn-nuevo');
 
-// Zona de impresión
-const printZone      = el('print-zone');
-const pzServicio     = el('pz-servicio');
-const pzTicket       = el('pz-ticket');
-const pzPref         = el('pz-pref');
-const pzFecha        = el('pz-fecha');
+// Teclado virtual
+const vkbd           = el('vkbd');
+const vkbdLabel      = el('vkbd-label');
+const vkbdPreview    = el('vkbd-preview');
+const vkKKey         = el('vk-k');
 
 // ── Reloj ─────────────────────────────────────────────────────────────────────
 function actualizarReloj() {
@@ -173,6 +120,84 @@ tRut.addEventListener('input', () => {
     const diff = fmt.length - prev.length;
     try { tRut.setSelectionRange(pos + diff, pos + diff); } catch {}
     ocultarError(tRutError, tRut);
+    vkbdPreview.textContent = fmt || '—';
+});
+
+// ── Fecha de nacimiento: formato DD/MM/AAAA ───────────────────────────────────
+
+function formatearFecha(raw) {
+    const d = raw.replace(/\D/g, '').slice(0, 8);
+    if (d.length <= 2) return d;
+    if (d.length <= 4) return `${d.slice(0, 2)}/${d.slice(2)}`;
+    return `${d.slice(0, 2)}/${d.slice(2, 4)}/${d.slice(4)}`;
+}
+
+function dobIso() {
+    const d = tDob.value.replace(/\D/g, '');
+    if (d.length !== 8) return '';
+    return `${d.slice(4, 8)}-${d.slice(2, 4)}-${d.slice(0, 2)}`;
+}
+
+// ── Teclado virtual — modos RUT y Fecha ──────────────────────────────────────
+
+let vkbdMode = 'rut';
+
+function abrirTeclado(modo) {
+    vkbdMode = modo;
+    vkbd.classList.add('active');
+    vkbd.removeAttribute('aria-hidden');
+
+    if (modo === 'rut') {
+        vkbdLabel.textContent   = '⌨ Ingrese su RUT';
+        vkbdPreview.textContent = tRut.value || '—';
+        vkKKey.disabled         = false;
+        vkKKey.classList.remove('vk-disabled');
+    } else {
+        vkbdLabel.textContent   = '📅 Fecha de nacimiento';
+        vkbdPreview.textContent = tDob.value || 'DD / MM / AAAA';
+        vkKKey.disabled         = true;
+        vkKKey.classList.add('vk-disabled');
+    }
+}
+
+function cerrarTeclado() {
+    vkbd.classList.remove('active');
+    vkbd.setAttribute('aria-hidden', 'true');
+}
+
+tRut.addEventListener('focus', () => abrirTeclado('rut'));
+tRut.addEventListener('click',  () => abrirTeclado('rut'));
+tDob.addEventListener('focus', () => abrirTeclado('dob'));
+tDob.addEventListener('click',  () => abrirTeclado('dob'));
+
+vkbd.addEventListener('pointerdown', e => {
+    e.preventDefault();
+    const btn = e.target.closest('.vk');
+    if (!btn || btn.disabled) return;
+
+    btn.classList.add('pressed');
+    setTimeout(() => btn.classList.remove('pressed'), 130);
+
+    const val = btn.dataset.val;
+
+    if (vkbdMode === 'rut') {
+        const raw = limpiarRut(tRut.value);
+        if (val === 'BACK') {
+            tRut.value = raw.slice(0, -1);
+        } else if (raw.length < 9) {
+            tRut.value = raw + val;
+        }
+        tRut.dispatchEvent(new Event('input', { bubbles: true }));
+    } else {
+        const raw = tDob.value.replace(/\D/g, '');
+        if (val === 'BACK') {
+            tDob.value = formatearFecha(raw.slice(0, -1));
+        } else if (raw.length < 8) {
+            tDob.value = formatearFecha(raw + val);
+        }
+        vkbdPreview.textContent = tDob.value || 'DD / MM / AAAA';
+        ocultarError(tDobError, tDob);
+    }
 });
 
 // ── Validación de fecha de nacimiento y edad ──────────────────────────────────
@@ -195,11 +220,9 @@ function fechaEsValida(fechaStr) {
     return d <= hoy && d.getFullYear() >= 1900;
 }
 
-// Limitar fecha máxima al día de hoy
-tDob.setAttribute('max', new Date().toISOString().split('T')[0]);
-
 // ── Paso 1: Verificar datos ───────────────────────────────────────────────────
 btnVerificar.addEventListener('click', async () => {
+    cerrarTeclado();
     let ok = true;
 
     // Validar RUT
@@ -214,8 +237,8 @@ btnVerificar.addEventListener('click', async () => {
         ocultarError(tRutError, tRut);
     }
 
-    // Validar fecha de nacimiento
-    const dob = tDob.value;
+    // Validar fecha de nacimiento (campo muestra DD/MM/AAAA, dobIso() devuelve AAAA-MM-DD)
+    const dob = dobIso();
     if (!fechaEsValida(dob)) {
         mostrarError(tDobError, tDob, 'Ingrese una fecha de nacimiento válida.');
         ok = false;
@@ -314,8 +337,8 @@ function renderServicios(servicios) {
 async function elegirServicio(servicio) {
     ocultarAlerta(step2Error);
 
-    // Deshabilitar todos los botones de servicio mientras se procesa
-    serviciosGrid.querySelectorAll('.servicio-btn').forEach(b => { b.disabled = true; });
+    const botones = serviciosGrid.querySelectorAll('.servicio-btn');
+    botones.forEach(b => { b.disabled = true; });
 
     try {
         const payload = {
@@ -324,6 +347,8 @@ async function elegirServicio(servicio) {
             es_preferente:    state.esPreferente,
         };
 
+        // El backend imprime ESC/POS y luego persiste en BD.
+        // Si la impresora falla, el catch muestra el error (HTTP 503).
         const ticketData = await TotemAPI.crearTicket(payload);
         state.ticket = ticketData;
 
@@ -331,8 +356,14 @@ async function elegirServicio(servicio) {
         irA(3);
 
     } catch (err) {
-        mostrarAlerta(step2Error, err.message ?? 'Error al generar ticket. Intente nuevamente.');
-        serviciosGrid.querySelectorAll('.servicio-btn').forEach(b => { b.disabled = false; });
+        const esPrinterError = /impresora/i.test(err.message ?? '');
+        mostrarAlerta(
+            step2Error,
+            esPrinterError
+                ? 'Impresora fuera de servicio. Por favor acuda a recepción.'
+                : (err.message ?? 'Error al generar ticket. Intente nuevamente.')
+        );
+        botones.forEach(b => { b.disabled = false; });
     }
 }
 
@@ -342,75 +373,10 @@ function mostrarTicket(t) {
     ticketNumero.textContent   = t.ticket_numero;
     ticketNumero.classList.toggle('pref', t.es_preferencial);
     ticketPref.classList.toggle('visible', t.es_preferencial);
-
-    // Rellenar zona de impresión
-    pzServicio.textContent = `Servicio: ${t.servicio}`;
-    pzTicket.textContent   = t.ticket_numero;
-    pzPref.hidden          = !t.es_preferencial;
-    pzFecha.textContent    = new Date().toLocaleString('es-CL', {
-        dateStyle: 'short', timeStyle: 'short',
-    });
-}
-
-// ── Impresión térmica ─────────────────────────────────────────────────────────
-btnImprimir.addEventListener('click', () => imprimirTicket());
-
-async function imprimirTicket() {
-    if (USE_QZ_TRAY) {
-        await imprimirConQzTray();
-    } else {
-        window.print();
-    }
-}
-
-/**
- * Impresión con QZ Tray (requiere USE_QZ_TRAY = true y qz-tray.js cargado).
- * Ver instrucciones de configuración al inicio del archivo.
- */
-async function imprimirConQzTray() {
-    if (typeof qz === 'undefined') {
-        console.error('[TÓTEM] qz-tray.js no está cargado. Active window.print() o incluya el script.');
-        window.print();
-        return;
-    }
-
-    try {
-        await qz.websocket.connect();
-        const config = qz.configs.create(THERMAL_PRINTER_NAME);
-        const t      = state.ticket;
-
-        // Comandos ESC/POS básicos:
-        //   \x1B\x40         → Inicializar impresora
-        //   \x1B\x61\x01     → Centrar texto
-        //   \x1B\x45\x01     → Negrita ON
-        //   \x1B\x45\x00     → Negrita OFF
-        //   \x1B\x68         → Doble alto
-        //   \x1D\x56\x42\x00 → Cortar papel
-        const data = [
-            '\x1B\x40',
-            '\x1B\x61\x01',
-            'CESFAM\n',
-            `${t.servicio}\n\n`,
-            '\x1B\x68',
-            `${t.ticket_numero}\n`,
-            '\x1B\x68',
-            t.es_preferencial ? '\n* PREFERENCIAL *\n' : '\n',
-            '\x1B\x61\x01',
-            'Espere en sala hasta\nser llamado\n\n',
-            new Date().toLocaleString('es-CL') + '\n',
-            '\x1D\x56\x42\x00',
-        ];
-
-        await qz.print(config, data);
-        await qz.websocket.disconnect();
-    } catch (err) {
-        console.error('[TÓTEM] Error al imprimir con QZ Tray:', err);
-        window.print();
-    }
 }
 
 // ── Navegación: botones volver e inicio ───────────────────────────────────────
-btnVolver0.addEventListener('click', () => { resetPaso1(); irA(0); });
+btnVolver0.addEventListener('click', () => { cerrarTeclado(); resetPaso1(); irA(0); });
 btnVolver1.addEventListener('click', () => {
     if (state.tieneRut) irA(1);
     else irA(0);

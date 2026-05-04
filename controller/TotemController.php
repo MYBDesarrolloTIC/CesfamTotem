@@ -104,7 +104,22 @@ final class TotemController
         $stmtNum->execute([':tipo' => $idTipo]);
         $siguiente = (int) $stmtNum->fetchColumn();
 
-        // Insertar ticket (id_paciente puede ser NULL para anónimos)
+        $num       = str_pad((string) $siguiente, 3, '0', STR_PAD_LEFT);
+        $ticketNum = $tipo['letra'] . '-' . $num . ($esPreferente ? 'P' : '');
+
+        $ticketData = [
+            'ticket_numero'   => $ticketNum,
+            'letra'           => $tipo['letra'],
+            'numero'          => $siguiente,
+            'es_preferencial' => $esPreferente,
+            'servicio'        => $tipo['nombre'],
+        ];
+
+        // ① IMPRIMIR PRIMERO — si la impresora falla lanza RuntimeException(503)
+        //   y la ejecución se detiene aquí: no se inserta nada en la BD.
+        PrinterService::imprimirTicket($ticketData);
+
+        // ② Solo si la impresión fue exitosa: persistir el ticket en la BD.
         $stmtIns = $this->db->prepare(
             'INSERT INTO tickets
                  (numero, letra, id_paciente, id_tipo_atencion, id_estado, es_preferente, veces_llamado)
@@ -119,15 +134,6 @@ final class TotemController
             ':pref'   => (int) $esPreferente,
         ]);
 
-        $num       = str_pad((string) $siguiente, 3, '0', STR_PAD_LEFT);
-        $ticketNum = $tipo['letra'] . '-' . $num . ($esPreferente ? 'P' : '');
-
-        return [
-            'ticket_numero'   => $ticketNum,
-            'letra'           => $tipo['letra'],
-            'numero'          => $siguiente,
-            'es_preferencial' => $esPreferente,
-            'servicio'        => $tipo['nombre'],
-        ];
+        return $ticketData;
     }
 }

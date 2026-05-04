@@ -5,6 +5,7 @@ header('Content-Type: application/json; charset=utf-8');
 header('X-Content-Type-Options: nosniff');
 
 require_once __DIR__ . '/conexion.php';
+require_once __DIR__ . '/PrinterService.php';
 require_once __DIR__ . '/FuncionarioController.php';
 require_once __DIR__ . '/LoginController.php';
 require_once __DIR__ . '/TotemController.php';

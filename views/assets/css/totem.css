@@ -71,7 +71,7 @@ body {
     align-items: center;
     justify-content: center;
     padding: 1.5rem;
-    overflow: hidden;
+    overflow-y: auto;
 }
 
 /* ── Progreso de pasos ─────────────────────────────────────────── */
@@ -163,6 +163,13 @@ body {
 .btn-touch:active { transform: scale(0.96); }
 
 .btn-touch .icon { font-size: 2rem; }
+
+.icon-svg {
+    width: 2.6rem;
+    height: 2rem;
+    display: block;
+    flex-shrink: 0;
+}
 
 .btn-primary-touch {
     background: linear-gradient(135deg, var(--c-cyan2), var(--c-cyan));
@@ -395,9 +402,28 @@ body {
     line-height: 1.5;
 }
 
-/* ── Área oculta para impresión ────────────────────────────────── */
+/* ── Confirmación de ticket impreso (paso 3) ───────────────────── */
 
-.print-zone { display: none; }
+.ticket-impreso-ok {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    background: rgba(52, 211, 153, 0.1);
+    border: 1.5px solid var(--c-success);
+    color: var(--c-success);
+    border-radius: var(--radius-md);
+    padding: 0.85rem 1.25rem;
+    font-size: 1.05rem;
+    font-weight: 600;
+    width: 100%;
+    animation: fadeStep 0.4s ease;
+}
+
+.ticket-impreso-icono {
+    font-size: 1.5rem;
+    font-weight: 900;
+    flex-shrink: 0;
+}
 
 /* ── Botones inferiores del paso 3 ────────────────────────────── */
 
@@ -443,54 +469,103 @@ body {
 
 .alert-error.visible { display: block; }
 
-/* ══════════════════════════════════════════════════════════════════
-   ESTILOS DE IMPRESIÓN TÉRMICA (80mm)
-   El navegador aplica esto al imprimir con Ctrl+P o window.print().
-   Configuración recomendada para el técnico:
-     - Tamaño de papel: 80mm x Auto (configurar en el SO)
-     - Márgenes: Ninguno / Mínimo
-     - Usar papel de fondo: Activado en Chrome
-     - Para impresión silenciosa (sin diálogo): Chrome con --kiosk-printing
-   ══════════════════════════════════════════════════════════════════ */
+/* ── Teclado virtual táctil ───────────────────────────────────── */
 
-@media print {
-    @page {
-        size: 80mm auto;
-        margin: 3mm 4mm;
-    }
+.vkbd {
+    width: 100%;
+    background: var(--c-surface);
+    border: 1.5px solid var(--c-border);
+    border-radius: var(--radius-lg);
+    padding: 0.85rem 1rem 1rem;
+    display: none;
+    flex-direction: column;
+    gap: 0.65rem;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
+}
 
-    body * { visibility: hidden !important; }
+.vkbd.active { display: flex; animation: fadeStep 0.22s ease; }
 
-    .print-zone,
-    .print-zone * {
-        visibility: visible !important;
-    }
+.vkbd-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 0.25rem 0.2rem;
+    border-bottom: 1px solid var(--c-border);
+}
 
-    .print-zone {
-        display: block !important;
-        position: fixed;
-        inset: 0;
-        background: #fff;
-        font-family: 'Courier New', monospace;
-        color: #000;
-        font-size: 12pt;
-    }
+.vkbd-label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--c-muted);
+    letter-spacing: 0.04em;
+}
 
-    .pz-header {
-        text-align: center;
-        border-bottom: 1px dashed #000;
-        padding-bottom: 4mm;
-        margin-bottom: 4mm;
-    }
+.vkbd-preview {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--c-cyan);
+    letter-spacing: 0.06em;
+    font-variant-numeric: tabular-nums;
+    min-width: 180px;
+    text-align: right;
+}
 
-    .pz-cesfam    { font-size: 10pt; font-weight: bold; letter-spacing: 0.05em; }
-    .pz-title     { font-size: 8pt; color: #555; }
-    .pz-servicio  { font-size: 12pt; font-weight: bold; margin: 3mm 0 1mm; }
-    .pz-ticket    { font-size: 36pt; font-weight: 900; text-align: center; letter-spacing: -1px; }
-    .pz-pref      { font-size: 10pt; font-weight: bold; text-align: center; }
-    .pz-sep       { border: none; border-top: 1px dashed #000; margin: 3mm 0; }
-    .pz-msg       { font-size: 8.5pt; text-align: center; line-height: 1.5; }
-    .pz-fecha     { font-size: 8pt; color: #555; text-align: center; margin-top: 3mm; }
+.vkbd-keys { display: flex; flex-direction: column; gap: 0.55rem; }
+
+.vkbd-row {
+    display: flex;
+    gap: 0.55rem;
+    justify-content: center;
+}
+
+.vk {
+    flex: 1;
+    max-width: 130px;
+    min-height: 72px;
+    border-radius: var(--radius-md);
+    border: 2px solid var(--c-border);
+    background: var(--c-card);
+    color: var(--c-white);
+    font-size: 1.7rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.1s, transform 0.08s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+}
+
+.vk.pressed,
+.vk:active {
+    background: rgba(79, 195, 247, 0.18);
+    border-color: var(--c-cyan);
+    transform: scale(0.93);
+}
+
+.vk-k {
+    color: var(--c-pref);
+    border-color: rgba(251, 191, 36, 0.45);
+}
+
+.vk-k.pressed,
+.vk-k:active { background: var(--c-pref-bg); border-color: var(--c-pref); }
+
+.vk-del {
+    background: rgba(248, 113, 113, 0.08);
+    border-color: rgba(248, 113, 113, 0.4);
+    color: var(--c-error);
+}
+
+.vk-del.pressed,
+.vk-del:active { background: rgba(248, 113, 113, 0.22); border-color: var(--c-error); }
+
+.vk-disabled {
+    opacity: 0.25;
+    pointer-events: none;
+    cursor: not-allowed;
 }
 
 /* ── Responsive táctil ─────────────────────────────────────────── */

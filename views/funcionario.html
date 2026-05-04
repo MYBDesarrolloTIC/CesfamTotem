@@ -4,77 +4,138 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Funcionario — CESFAM</title>
-  <link rel="stylesheet" href="assets/css/funcionario.css" />
+  <link rel="stylesheet" href="assets/css/Styles.css" />
 </head>
-<body>
+<body class="dark-theme"> 
 
-  <!-- ══ MODAL SALTADOS (CSS :target) ══════════════════════════════════════ -->
+  <!-- ══ MODALES ══ -->
   <div id="modal-saltados" class="modal-backdrop">
     <div class="modal-box">
       <div class="modal-header">
-        <h2>Turnos Saltados — Hoy</h2>
-        <a href="#" class="btn-icon" aria-label="Cerrar">✕</a>
+        <h2>Devolver Turnos Saltados</h2>
+        <a href="#" class="btn-icon close-modal" aria-label="Cerrar">✕</a>
       </div>
       <ul id="saltados-lista" class="modal-body saltados-lista">
-        <li class="empty-msg">Seleccione un módulo para ver los saltados.</li>
+        <li class="empty-msg">Cargando...</li>
       </ul>
     </div>
   </div>
 
-  <!-- ══ HEADER ════════════════════════════════════════════════════════════ -->
+  <div id="modal-lista-completa" class="modal-backdrop">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h2>Lista Total de Espera</h2>
+        <a href="#" class="btn-icon close-modal" aria-label="Cerrar">✕</a>
+      </div>
+      <div class="modal-body table-responsive">
+        <table class="cola-table">
+          <thead><tr><th>RUT</th><th>Número</th><th>Espera</th></tr></thead>
+          <tbody id="lista-completa-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div id="modal-derivar" class="modal-backdrop">
+    <div class="modal-box" style="max-width: 400px;">
+      <div class="modal-header">
+        <h2>Derivar Turno Actual</h2>
+        <a href="#" class="btn-icon close-modal" aria-label="Cerrar">✕</a>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label for="select-derivar">Servicio de destino:</label>
+          <select id="select-derivar">
+            <option value="" disabled selected>Cargando servicios...</option>
+          </select>
+        </div>
+        <button id="btn-confirmar-derivar" class="btn btn-primary btn-full">Confirmar Derivación</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ HEADER ══ -->
   <header class="app-header">
     <div class="header-brand">
       <span class="header-cross">✚</span>
-      <span class="header-title">CESFAM</span>
+      <span class="header-title">CESFAM Panel</span>
     </div>
-    <div class="header-modulo-wrap">
-      <label for="modulos" class="header-select-label">Módulo de Atención</label>
-      <select id="modulos">
-        <option value="" disabled selected>Cargando módulos…</option>
-      </select>
-      <span id="modulos-error" class="header-error" hidden></span>
+    <div class="header-tools">
+      <span class="header-select-label">Módulo actual:</span>
+      <span id="nombre-modulo-display" class="module-name">Cargando...</span>
+      
+      <!-- Botón Cambio de Tema -->
+      <button id="btn-theme-toggle" class="btn-icon theme-btn" title="Cambiar a Tema Claro">☀️</button>
+      
+      <!-- Botón Cerrar Sesión (Pequeño) -->
+      <button id="btn-logout" class="btn btn-outline btn-sm">Cerrar Sesión</button>
     </div>
   </header>
 
-  <!-- ══ DASHBOARD ═════════════════════════════════════════════════════════ -->
-  <main class="dashboard">
-
-    <!-- ── Izquierda: Llamado Actual ──────────────────────────────────── -->
-    <section class="card card-actual">
-      <h2 class="card-title">Llamado Actual</h2>
-
-      <div class="ticket-principal">
-        <span id="ticket-numero" class="ticket-numero">—</span>
-        <span id="ticket-badge" class="badge badge-preferencial" hidden>Preferencial</span>
-      </div>
-
-      <dl class="turno-meta">
-        <dt>RUT</dt>
-        <dd id="turno-rut">—</dd>
-        <dt>Espera</dt>
-        <dd id="turno-espera">—</dd>
-      </dl>
-
-      <div class="card-actions">
-        <button id="btn-llamar"   class="btn btn-primary   btn-action">▶ Llamar</button>
-        <button id="btn-rellamar" class="btn btn-secondary btn-action" disabled>
-          ↺ Volver a Llamar <span id="rellamadas-counter" class="counter-badge">0/2</span>
+  <!-- ══ DASHBOARD WIREFRAME (3 COLUMNAS) ══ -->
+  <main class="dashboard-wireframe">
+    
+    <!-- Columna 1: Menú Izquierdo -->
+    <aside class="panel-left">
+      <div class="menu-container">
+        <button id="btn-toggle-menu" class="btn btn-outline btn-menu-square" title="Opciones Adicionales">
+          ☰
         </button>
-        <button id="btn-saltar"   class="btn btn-warning   btn-action" disabled>⏭ Saltar</button>
-        <button id="btn-detalles" class="btn btn-outline   btn-action" disabled>Ver Detalles</button>
+        <!-- Ocultamos los botones menos usados aquí -->
+        <div id="dropdown-menu" class="dropdown-menu">
+          <button id="btn-menu-saltados" class="dropdown-item">📋 Devolver Saltado</button>
+          <button id="btn-menu-derivar" class="dropdown-item">🔄 Derivar Turno</button>
+          <button id="btn-menu-lista" class="dropdown-item">👥 Lista Total de Espera</button>
+        </div>
       </div>
+    </aside>
+
+    <!-- Columna 2: Centro (Turno y Cola) -->
+    <section class="panel-center">
+      
+      <!-- Turno Actual -->
+      <div class="card current-turn-box" id="current-turn-card">
+        <h2 class="card-title text-center">TURNO EN ATENCIÓN</h2>
+        <div class="turn-center-display">
+          <span class="stat-value ticket-numero" id="ticket-numero">—</span>
+          <div id="ticket-badge" class="badge-pref-large" hidden>PREFERENCIAL</div>
+        </div>
+        <div class="turn-center-details">
+          <div class="detail-box">
+            <span class="stat-label">RUT Paciente</span>
+            <span class="stat-value rut-color" id="turno-rut">—</span>
+          </div>
+          <div class="detail-box">
+            <span class="stat-label">Tiempo Esperado</span>
+            <span class="stat-value" id="turno-espera">—</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Botón gigante que reemplaza la caja central cuando no hay turno -->
+      <button id="btn-llamar-siguiente-center" class="btn btn-primary btn-call-huge pulse-anim" style="display: none;">
+        ▶ LLAMAR AL SIGUIENTE
+      </button>
+
+      <!-- Siguientes en Cola -->
+      <div class="card next-turns-box">
+        <h2 class="card-title text-center">SIGUIENTES EN COLA (MAX 3)</h2>
+        <div class="horizontal-queue" id="cola-container">
+          <div class="empty-msg" style="width: 100%;">Sin turnos en espera</div>
+        </div>
+      </div>
+
     </section>
 
-    <!-- ── Derecha: Cola ──────────────────────────────────────────────── -->
-    <section class="card card-cola">
-      <h2 class="card-title">Próximos en Espera</h2>
-
-      <ul id="cola">
-        <li class="cola-empty">Sin turnos en espera</li>
-      </ul>
-
-      <a id="btn-saltados" href="#modal-saltados" class="btn btn-outline btn-full">Ver Saltados</a>
-    </section>
+    <!-- Columna 3: Botones Vitales -->
+    <aside class="panel-right">
+      <button id="btn-llamar" class="btn btn-primary btn-stacked">▶ Llamar</button>
+      <button id="btn-terminar" class="btn btn-outline btn-stacked" disabled>✔️ Terminar Atención</button>
+      <button id="btn-rellamar" class="btn btn-outline btn-stacked" disabled>
+        ↺ Re Llamar <span id="rellamadas-counter" class="counter-badge">0/2</span>
+      </button>
+      <button id="btn-saltar" class="btn btn-secondary btn-stacked" disabled>⏭ Saltar Número</button>
+    </aside>
 
   </main>
 

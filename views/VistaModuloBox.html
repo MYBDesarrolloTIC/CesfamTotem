@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Módulo de Atención Mejorado</title>
+    <link rel="stylesheet" href="CSS/bootstrap.min.css">
+    <link rel="stylesheet" href="CSS/style.css">
+</head>
+<body>
+
+<div class="login-container" id="loginScreen">
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header bg-primary text-white text-center">
+                <h4>Login de Módulo</h4>
+            </div>
+            <div class="card-body">
+                <form id="moduleLoginForm">
+                    <div class="form-group">
+                        <label for="loginRut">RUT del Funcionario:</label>
+                        <input type="text" class="form-control" id="loginRut" name="rut" required placeholder="12.345.678-9">
+                    </div>
+                    <div class="form-group">
+                        <label for="loginModulo">Módulo:</label>
+                        <select class="form-control" id="loginModulo" name="modulo" required>
+                            <option value="">Seleccione un módulo</option>
+                            <option value="Farmacia">Farmacia</option>
+                            <option value="Recepcion">Recepción</option>
+                            <option value="Box 1">Box 1</option>
+                            </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="loginPassword">Contraseña del Módulo:</label>
+                        <input type="password" class="form-control" id="loginPassword" name="password" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block">Ingresar</button>
+                    <div id="loginError" class="text-danger mt-2 text-center" style="display:none;">
+                        Credenciales incorrectas.
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="main-container" id="mainScreen">
+    <div class="dropdown dropdown-menu-button">
+        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Menú
+        </button>
+        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+            <a class="dropdown-item" href="#" id="menuListado">Listado de Espera</a>
+            <a class="dropdown-item" href="#" id="menuTerminar">Terminar Atención</a>
+            <a class="dropdown-item" href="#" id="menuLlamarSaltado">Llamar Saltado</a>
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item" href="#" id="menuDerivar">Derivar Numero</a>
+        </div>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="current-turn-box" id="currentTurn">
+                <h3>Turno Actual</h3>
+                <div class="row">
+                    <div class="col-4"><strong>RUT:</strong> <span id="currentRut">--</span></div>
+                    <div class="col-4"><strong>Número:</strong> <span id="currentNumero">--</span></div>
+                    <div class="col-4"><strong>Espera:</strong> <span id="currentTiempoEspera">--</span> min</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            <h4>Siguientes en Cola (max 3)</h4>
+            <table class="table table-striped next-queue-table" id="nextQueueTable">
+                <thead>
+                    <tr>
+                        <th>RUT</th>
+                        <th>Número</th>
+                        <th>Tiempo de Espera</th>
+                    </tr>
+                </thead>
+                <tbody id="nextQueueBody">
+                    </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="row justify-content-center action-buttons">
+        <div class="col-5">
+            <button class="btn btn-warning btn-lg btn-block" id="btnSaltar">Saltar</button>
+        </div>
+        <div class="col-5">
+            <button class="btn btn-success btn-lg btn-block" id="btnLlamar">Llamar (<span id="llamarCount">0</span>/3)</button>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalListado" tabindex="-1" role="dialog" aria-labelledby="modalListadoLabel" aria-hidden="true">
+    <div class="modal-dialog modal-small" role="document">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="modalListadoLabel">Listado de Espera Completo</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Número</th>
+                            <th>RUT</th>
+                            <th>Espera</th>
+                        </tr>
+                    </thead>
+                    <tbody id="listadoEsperaBody">
+                        </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalDerivar" tabindex="-1" role="dialog" aria-labelledby="modalDerivarLabel" aria-hidden="true">
+    <div class="modal-dialog modal-small" role="document">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="modalDerivarLabel">Derivar Turno Actual</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="derivarForm">
+                    <div class="form-group">
+                        <label for="derivarMotivo">Motivo:</label>
+                        <input type="text" class="form-control" id="derivarMotivo" name="motivo" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="derivarModulo">Módulo de Destino:</label>
+                        <select class="form-control" id="derivarModulo" name="modulo_destino" required>
+                            <option value="">Seleccione módulo</option>
+                            <option value="Farmacia">Farmacia</option>
+                            <option value="Box 2">Box 2</option>
+                            </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block">Derivar</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="JS/jquery.min.js"></script>
+<script src="JS/bootstrap.bundle.min.js"></script>
+<script src="JS/api.js"></script>
+<script src="JS/mejorado_box.js"></script>
+
+</body>
+</html>

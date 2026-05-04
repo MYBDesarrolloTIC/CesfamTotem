@@ -1,67 +1,79 @@
-/* ──────────────────────────────────────────────────────────────────
-   TÓTEM — Módulo Pacientes
-   Diseño táctil, accesible y legible para pantalla táctil de kiosco.
-   Fuentes grandes, contraste alto, áreas de toque mínimo 64px.
-   ────────────────────────────────────────────────────────────────── */
+/* ==========================================================================
+   TÓTEM DE ATENCIÓN — CESFAM
+   Temas: Oscuro (Azul Noche/Rojo) y Claro (Blanco/Azul Institucional)
+   ========================================================================== */
 
 :root {
-    --c-bg:       #070c18;
-    --c-surface:  #0f1e35;
-    --c-card:     #162844;
-    --c-border:   #1e3a5f;
-    --c-cyan:     #4fc3f7;
-    --c-cyan2:    #29b6f6;
-    --c-white:    #e8f4fd;
-    --c-muted:    #7da7c4;
-    --c-pref:     #fbbf24;
-    --c-pref-bg:  rgba(251, 191, 36, 0.12);
-    --c-error:    #f87171;
-    --c-success:  #34d399;
-    --radius-lg:  20px;
-    --radius-md:  14px;
-    --shadow:     0 8px 40px rgba(0, 0, 0, 0.5);
-    --transition: 0.2s ease;
+    --clr-bg: #070c18;
+    --clr-primary: #1a3f6b;
+    --clr-surface: #0f1e35;
+    --clr-border: #1e3a5f;
+    --clr-btn-bg: #1e3a5f;
+    --clr-rojo: #ef4444;
+    --clr-rojo-hover: #dc2626;
+    --clr-pref: #fbbf24;
+    --clr-pref-bg: rgba(251, 191, 36, 0.12);
+    --text-main: #e8f4fd;
+    --text-muted: #7da7c4;
+    --text-dark: #ffffff;
+    --radius-sm: 8px;
+    --radius-md: 14px;
+    --radius-lg: 20px;
+    --shadow-soft: 0 8px 32px rgba(0, 0, 0, 0.4);
+    --transition: 0.25s ease;
 }
 
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body.light-theme {
+    --clr-bg: #f4f6f9;
+    --clr-primary: #ffffff;
+    --clr-surface: #ffffff;
+    --clr-border: #e2e8f0;
+    --clr-btn-bg: #f8fafc;
+    --clr-rojo: #0284c7;
+    --clr-rojo-hover: #0369a1;
+    --text-main: #0f172a;
+    --text-muted: #64748b;
+    --shadow-soft: 0 4px 15px rgba(0, 0, 0, 0.05);
+}
 
-html, body {
-    height: 100%;
-    overflow: hidden;
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
 }
 
 body {
-    background: var(--c-bg);
+    height: 100vh;
     font-family: 'Segoe UI', system-ui, sans-serif;
-    color: var(--c-white);
+    background: var(--clr-bg);
+    color: var(--text-main);
     display: flex;
     flex-direction: column;
+    overflow: hidden;
 }
 
-/* ── Layout principal ──────────────────────────────────────────── */
-
 .totem-header {
-    background: var(--c-surface);
-    border-bottom: 2px solid var(--c-border);
-    padding: 1rem 2rem;
+    background: var(--clr-surface);
+    border-bottom: 2px solid var(--clr-border);
+    padding: clamp(0.8rem, 2vw, 1.2rem) clamp(1rem, 4vw, 2.5rem);
     display: flex;
     align-items: center;
     justify-content: space-between;
-    flex-shrink: 0;
+    box-shadow: var(--shadow-soft);
 }
 
 .totem-title {
-    font-size: clamp(1.1rem, 3vw, 1.5rem);
-    font-weight: 700;
-    color: var(--c-cyan);
-    letter-spacing: 0.04em;
+    font-size: clamp(1rem, 3vw, 1.5rem);
+    font-weight: 800;
+    color: var(--clr-rojo);
 }
 
 .totem-clock {
-    font-size: clamp(1rem, 2.5vw, 1.3rem);
-    font-weight: 600;
-    color: var(--c-muted);
-    font-variant-numeric: tabular-nums;
+    font-size: clamp(0.9rem, 2.5vw, 1.2rem);
+    font-weight: 700;
+    color: var(--text-muted);
 }
 
 .totem-main {
@@ -69,162 +81,141 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-    padding: 1.5rem;
+    justify-content: flex-start;
+    padding: clamp(1rem, 4vw, 2rem);
     overflow-y: auto;
 }
 
-/* ── Progreso de pasos ─────────────────────────────────────────── */
-
 .step-dots {
     display: flex;
-    gap: 0.6rem;
-    margin-bottom: 1.5rem;
+    gap: 0.8rem;
+    margin-bottom: 2rem;
 }
 
 .step-dot {
-    width: 10px; height: 10px;
+    width: 14px;
+    height: 14px;
     border-radius: 50%;
-    background: var(--c-border);
-    transition: background var(--transition), transform var(--transition);
+    background: var(--clr-border);
+    transition: all 0.3s;
 }
 
 .step-dot.active {
-    background: var(--c-cyan);
+    background: var(--clr-rojo);
     transform: scale(1.3);
 }
 
-.step-dot.done { background: var(--c-success); }
-
-/* ── Paso genérico ─────────────────────────────────────────────── */
+.step-dot.done {
+    background: #34d399;
+}
 
 .step {
-    width: 100%;
-    max-width: 680px;
-    animation: fadeStep 0.35s ease;
     display: none;
     flex-direction: column;
     align-items: center;
-    gap: 1.25rem;
+    gap: 1.5rem;
+    width: 100%;
+    max-width: 700px;
+    animation: popIn 0.4s ease-out;
 }
 
-.step.active { display: flex; }
-
-@keyframes fadeStep {
-    from { opacity: 0; transform: translateY(20px); }
-    to   { opacity: 1; transform: translateY(0); }
+.step.active {
+    display: flex;
 }
 
-/* ── Paso 0: Bienvenida ────────────────────────────────────────── */
+section#step-1.step {
+    max-width: 1000px !important;
+}
+
+section#step-2.step {
+    max-width: 1100px !important;
+    width: 100%;
+}
 
 .welcome-title {
-    font-size: clamp(1.6rem, 5vw, 2.6rem);
+    font-size: clamp(1.8rem, 6vw, 3rem);
     font-weight: 800;
-    color: var(--c-white);
+    color: var(--text-main);
     text-align: center;
-    line-height: 1.2;
+    margin-bottom: 0.5rem;
 }
 
 .welcome-subtitle {
-    font-size: clamp(1rem, 3vw, 1.3rem);
-    color: var(--c-muted);
+    font-size: clamp(1rem, 3vw, 1.2rem);
+    color: var(--text-muted);
     text-align: center;
+    margin-bottom: 1.5rem;
 }
 
 .welcome-btns {
     display: flex;
-    gap: 1.25rem;
+    gap: 1.5rem;
     flex-wrap: wrap;
     justify-content: center;
     width: 100%;
-    margin-top: 0.5rem;
 }
 
-/* ── Botones táctiles ──────────────────────────────────────────── */
-
 .btn-touch {
-    min-height: 80px;
-    min-width: 220px;
-    padding: 1.25rem 2rem;
-    border: none;
-    border-radius: var(--radius-lg);
-    font-size: clamp(1rem, 2.8vw, 1.3rem);
-    font-weight: 700;
-    cursor: pointer;
-    transition: transform var(--transition), box-shadow var(--transition), filter var(--transition);
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 0.4rem;
-    letter-spacing: 0.02em;
+    gap: 0.5rem;
+    padding: 1.5rem;
+    border: none;
+    border-radius: var(--radius-lg);
+    font-size: clamp(1.1rem, 3vw, 1.3rem);
+    font-weight: 700;
+    cursor: pointer;
+    transition: all var(--transition);
+    min-width: 200px;
+    min-height: 90px;
 }
 
-.btn-touch:active { transform: scale(0.96); }
-
-.btn-touch .icon { font-size: 2rem; }
-
-.icon-svg {
-    width: 2.6rem;
-    height: 2rem;
-    display: block;
-    flex-shrink: 0;
+.btn-touch:active {
+    transform: scale(0.96);
 }
 
 .btn-primary-touch {
-    background: linear-gradient(135deg, var(--c-cyan2), var(--c-cyan));
-    color: var(--c-bg);
+    background: var(--clr-rojo);
+    color: var(--text-dark);
 }
 
-.btn-primary-touch:hover { filter: brightness(1.1); }
+.btn-primary-touch:hover {
+    background: var(--clr-rojo-hover);
+    box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
+}
+
+body.light-theme .btn-primary-touch:hover {
+    box-shadow: 0 4px 15px rgba(2, 132, 199, 0.3);
+}
 
 .btn-secondary-touch {
-    background: var(--c-card);
-    border: 2px solid var(--c-border);
-    color: var(--c-muted);
+    background: var(--clr-btn-bg);
+    border: 2px solid var(--clr-border);
+    color: var(--text-main);
 }
 
 .btn-secondary-touch:hover {
-    border-color: var(--c-cyan);
-    color: var(--c-cyan);
+    border-color: var(--clr-rojo);
+    color: var(--clr-rojo);
 }
-
-.btn-outline-touch {
-    background: transparent;
-    border: 2px solid var(--c-border);
-    color: var(--c-muted);
-    min-height: 56px;
-    font-size: 1rem;
-    width: 100%;
-    border-radius: var(--radius-md);
-    padding: 0.75rem 1.5rem;
-}
-
-.btn-outline-touch:hover { border-color: var(--c-cyan); color: var(--c-cyan); }
-
-.btn-large {
-    min-height: 70px;
-    width: 100%;
-    max-width: 460px;
-    font-size: clamp(1.1rem, 3vw, 1.4rem);
-    border-radius: var(--radius-lg);
-}
-
-/* ── Formulario de datos ───────────────────────────────────────── */
 
 .form-panel {
-    background: var(--c-surface);
-    border: 1.5px solid var(--c-border);
+    background: var(--clr-surface);
+    border: 1.5px solid var(--clr-border);
     border-radius: var(--radius-lg);
-    padding: 1.75rem 2rem;
+    padding: clamp(1.5rem, 4vw, 2.5rem);
+    box-shadow: var(--shadow-soft);
     width: 100%;
 }
 
 .form-panel h2 {
-    font-size: clamp(1.1rem, 3vw, 1.4rem);
-    color: var(--c-cyan);
-    margin-bottom: 1.25rem;
-    font-weight: 700;
+    margin-bottom: 1.5rem;
+    font-size: clamp(1.2rem, 3vw, 1.5rem);
+    color: var(--clr-rojo);
+    border-bottom: 1px solid var(--clr-border);
+    padding-bottom: 0.5rem;
 }
 
 .field-group {
@@ -233,351 +224,346 @@ body {
 
 .field-group label {
     display: block;
+    color: var(--text-muted);
     font-size: clamp(0.9rem, 2vw, 1rem);
     font-weight: 600;
-    color: var(--c-muted);
     margin-bottom: 0.45rem;
-    letter-spacing: 0.02em;
 }
 
 .field-group input {
     width: 100%;
-    padding: 0.9rem 1.1rem;
-    background: var(--c-card);
-    border: 2px solid var(--c-border);
-    border-radius: var(--radius-md);
-    font-size: clamp(1rem, 2.5vw, 1.2rem);
-    color: var(--c-white);
+    padding: 1rem;
+    background: var(--clr-bg);
+    border: 2px solid var(--clr-border);
+    border-radius: var(--radius-sm);
+    font-size: clamp(1rem, 3vw, 1.2rem);
+    color: var(--text-main);
     outline: none;
-    transition: border-color var(--transition), box-shadow var(--transition);
+    transition: border-color var(--transition);
 }
 
 .field-group input:focus {
-    border-color: var(--c-cyan);
-    box-shadow: 0 0 0 3px rgba(79, 195, 247, 0.15);
+    border-color: var(--clr-rojo);
 }
 
-.field-group input.error { border-color: var(--c-error); }
-
 .field-hint {
-    font-size: 0.82rem;
-    color: var(--c-muted);
-    margin-top: 0.3rem;
+    display: block;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin-top: 0.35rem;
 }
 
 .field-error {
     font-size: 0.85rem;
-    color: var(--c-error);
+    color: #f87171;
     margin-top: 0.35rem;
-    font-weight: 500;
     display: none;
-}
-
-.field-error.visible { display: block; }
-
-.form-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1rem;
-}
-
-.preferente-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.4rem;
-    background: var(--c-pref-bg);
-    border: 1.5px solid var(--c-pref);
-    color: var(--c-pref);
-    padding: 0.5rem 1rem;
-    border-radius: 50px;
-    font-size: 0.95rem;
-    font-weight: 700;
-    letter-spacing: 0.02em;
-}
-
-/* ── Paso 2: Selección de servicio ─────────────────────────────── */
-
-.servicios-titulo {
-    font-size: clamp(1.1rem, 3vw, 1.5rem);
-    font-weight: 700;
-    color: var(--c-white);
-    text-align: center;
-}
-
-.servicios-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 1rem;
-    width: 100%;
-}
-
-.servicio-btn {
-    background: var(--c-card);
-    border: 2px solid var(--c-border);
-    border-radius: var(--radius-lg);
-    padding: 1.1rem 0.75rem;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-    cursor: pointer;
-    transition: border-color var(--transition), background var(--transition), transform var(--transition);
-    min-height: 110px;
-    color: var(--c-white);
-}
-
-.servicio-btn:active { transform: scale(0.95); }
-.servicio-btn:hover  { border-color: var(--c-cyan); background: rgba(79, 195, 247, 0.07); }
-
-.servicio-btn .s-icon { font-size: 2.2rem; }
-
-.servicio-btn .s-nombre {
-    font-size: clamp(0.8rem, 2vw, 0.95rem);
-    font-weight: 700;
-    text-align: center;
-    line-height: 1.2;
-}
-
-.servicio-btn .s-letra {
-    font-size: 0.75rem;
-    color: var(--c-muted);
     font-weight: 600;
-    letter-spacing: 0.06em;
 }
-
-/* ── Paso 3: Ticket ────────────────────────────────────────────── */
-
-.ticket-panel {
-    background: var(--c-surface);
-    border: 2px solid var(--c-border);
-    border-radius: var(--radius-lg);
-    padding: 2rem;
-    width: 100%;
-    text-align: center;
-    box-shadow: var(--shadow);
-}
-
-.ticket-panel .servicio-label {
-    font-size: clamp(0.9rem, 2.5vw, 1.1rem);
-    color: var(--c-muted);
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    font-weight: 600;
-    margin-bottom: 0.5rem;
-}
-
-.ticket-numero {
-    font-size: clamp(4rem, 14vw, 7rem);
-    font-weight: 900;
-    color: var(--c-cyan);
-    letter-spacing: -0.02em;
-    line-height: 1;
-    margin: 0.3rem 0;
-    text-shadow: 0 0 40px rgba(79, 195, 247, 0.4);
-}
-
-.ticket-numero.pref {
-    color: var(--c-pref);
-    text-shadow: 0 0 40px rgba(251, 191, 36, 0.4);
-}
-
-.ticket-pref-label {
-    display: none;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-    color: var(--c-pref);
-    font-size: 1.1rem;
-    font-weight: 700;
-    margin-top: 0.3rem;
-}
-
-.ticket-pref-label.visible { display: flex; }
-
-.ticket-msg {
-    font-size: clamp(0.9rem, 2.5vw, 1.05rem);
-    color: var(--c-muted);
-    margin-top: 1.2rem;
-    line-height: 1.5;
-}
-
-/* ── Confirmación de ticket impreso (paso 3) ───────────────────── */
-
-.ticket-impreso-ok {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    background: rgba(52, 211, 153, 0.1);
-    border: 1.5px solid var(--c-success);
-    color: var(--c-success);
-    border-radius: var(--radius-md);
-    padding: 0.85rem 1.25rem;
-    font-size: 1.05rem;
-    font-weight: 600;
-    width: 100%;
-    animation: fadeStep 0.4s ease;
-}
-
-.ticket-impreso-icono {
-    font-size: 1.5rem;
-    font-weight: 900;
-    flex-shrink: 0;
-}
-
-/* ── Botones inferiores del paso 3 ────────────────────────────── */
-
-.ticket-actions {
-    display: flex;
-    gap: 1rem;
-    width: 100%;
-    max-width: 480px;
-    justify-content: center;
-}
-
-.ticket-actions .btn-touch { flex: 1; min-height: 64px; }
-
-/* ── Spinner de carga ──────────────────────────────────────────── */
-
-.spinner {
-    width: 40px; height: 40px;
-    border: 4px solid var(--c-border);
-    border-top-color: var(--c-cyan);
-    border-radius: 50%;
-    animation: spin 0.8s linear infinite;
-    margin: 0 auto;
-}
-
-@keyframes spin {
-    to { transform: rotate(360deg); }
-}
-
-/* ── Mensaje de error global ───────────────────────────────────── */
 
 .alert-error {
     background: rgba(248, 113, 113, 0.1);
-    border: 1.5px solid var(--c-error);
-    color: var(--c-error);
-    border-radius: var(--radius-md);
-    padding: 0.75rem 1rem;
-    font-size: 0.95rem;
-    font-weight: 500;
+    border: 1.5px solid #f87171;
+    color: #f87171;
+    padding: 1rem;
+    border-radius: var(--radius-sm);
     text-align: center;
-    width: 100%;
+    font-weight: 600;
     display: none;
+    margin-top: 1rem;
 }
 
-.alert-error.visible { display: block; }
+.preferente-badge {
+    background: var(--clr-pref-bg);
+    color: var(--clr-pref);
+    border: 2px solid var(--clr-pref);
+    padding: 0.8rem 1.5rem;
+    border-radius: 50px;
+    font-weight: bold;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: clamp(0.9rem, 2vw, 1.1rem);
+    margin-top: 1rem;
+    width: 100%;
+}
 
-/* ── Teclado virtual táctil ───────────────────────────────────── */
+.btn-large {
+    min-height: 70px;
+    font-size: clamp(1rem, 3vw, 1.2rem);
+    flex: 2;
+    padding: 1rem;
+}
+
+.btn-outline-touch {
+    flex: 1;
+    background: transparent;
+    border: 2px solid var(--clr-border);
+    color: var(--text-muted);
+    border-radius: var(--radius-sm);
+    font-size: clamp(1rem, 2vw, 1.2rem);
+    font-weight: 700;
+    cursor: pointer;
+    transition: all var(--transition);
+    padding: 1rem 2rem;
+}
+
+.btn-outline-touch:hover {
+    background: var(--clr-bg);
+    color: var(--text-main);
+    border-color: var(--clr-rojo);
+}
 
 .vkbd {
-    width: 100%;
-    background: var(--c-surface);
-    border: 1.5px solid var(--c-border);
+    background: var(--clr-surface);
     border-radius: var(--radius-lg);
-    padding: 0.85rem 1rem 1rem;
-    display: none;
+    border: 2px solid var(--clr-border);
+    box-shadow: var(--shadow-soft);
+    padding: 1.5rem;
+    display: flex;
     flex-direction: column;
-    gap: 0.65rem;
-    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
+    gap: 1.5rem;
 }
-
-.vkbd.active { display: flex; animation: fadeStep 0.22s ease; }
 
 .vkbd-header {
     display: flex;
-    align-items: center;
     justify-content: space-between;
-    padding: 0 0.25rem 0.2rem;
-    border-bottom: 1px solid var(--c-border);
+    align-items: center;
+    background: var(--clr-bg);
+    padding: 1rem;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--clr-border);
 }
 
 .vkbd-label {
-    font-size: 0.85rem;
+    font-size: 1rem;
     font-weight: 600;
-    color: var(--c-muted);
-    letter-spacing: 0.04em;
+    color: var(--text-muted);
 }
 
 .vkbd-preview {
-    font-size: 1.25rem;
-    font-weight: 700;
-    color: var(--c-cyan);
-    letter-spacing: 0.06em;
-    font-variant-numeric: tabular-nums;
-    min-width: 180px;
-    text-align: right;
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: var(--text-main);
+    font-family: monospace;
 }
 
-.vkbd-keys { display: flex; flex-direction: column; gap: 0.55rem; }
+.vkbd-keys {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+}
 
 .vkbd-row {
     display: flex;
-    gap: 0.55rem;
+    gap: 0.8rem;
     justify-content: center;
 }
 
 .vk {
     flex: 1;
-    max-width: 130px;
-    min-height: 72px;
-    border-radius: var(--radius-md);
-    border: 2px solid var(--c-border);
-    background: var(--c-card);
-    color: var(--c-white);
-    font-size: 1.7rem;
-    font-weight: 700;
-    cursor: pointer;
-    transition: background 0.1s, transform 0.08s;
+    background: var(--clr-bg);
+    border: 2px solid var(--clr-border);
+    border-radius: var(--radius-sm);
+    font-size: clamp(1.5rem, 4vw, 2rem);
+    font-weight: 800;
+    color: var(--text-main);
+    height: clamp(65px, 8vw, 85px);
     display: flex;
     align-items: center;
     justify-content: center;
+    cursor: pointer;
+    transition: all 0.1s;
     user-select: none;
-    -webkit-user-select: none;
-    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    box-shadow: 0 4px 0 var(--clr-border);
 }
 
-.vk.pressed,
 .vk:active {
-    background: rgba(79, 195, 247, 0.18);
-    border-color: var(--c-cyan);
-    transform: scale(0.93);
+    transform: translateY(4px);
+    box-shadow: 0 0 0 var(--clr-border);
+    background: var(--clr-border);
 }
 
-.vk-k {
-    color: var(--c-pref);
-    border-color: rgba(251, 191, 36, 0.45);
-}
-
-.vk-k.pressed,
-.vk-k:active { background: var(--c-pref-bg); border-color: var(--c-pref); }
-
+.vk-k,
 .vk-del {
-    background: rgba(248, 113, 113, 0.08);
-    border-color: rgba(248, 113, 113, 0.4);
-    color: var(--c-error);
+    background: var(--clr-btn-bg);
+    color: var(--clr-rojo);
+    border-color: var(--clr-rojo);
+    box-shadow: 0 4px 0 var(--clr-rojo);
 }
 
-.vk-del.pressed,
-.vk-del:active { background: rgba(248, 113, 113, 0.22); border-color: var(--c-error); }
-
-.vk-disabled {
-    opacity: 0.25;
-    pointer-events: none;
-    cursor: not-allowed;
+.vk-k:active,
+.vk-del:active {
+    box-shadow: 0 0 0 var(--clr-rojo);
+    background: var(--clr-rojo);
+    color: var(--text-dark);
 }
 
-/* ── Responsive táctil ─────────────────────────────────────────── */
-
-@media (max-width: 600px) {
-    .servicios-grid { grid-template-columns: repeat(2, 1fr); }
-    .form-row       { grid-template-columns: 1fr; }
-    .welcome-btns   { flex-direction: column; align-items: center; }
+.servicios-titulo {
+    font-size: clamp(1.5rem, 4vw, 2rem);
+    font-weight: 700;
+    color: var(--text-main);
+    margin-bottom: 2rem;
+    text-align: center;
 }
 
-@media (max-height: 600px) {
-    .totem-main { padding: 0.75rem; }
-    .step        { gap: 0.75rem; }
-    .form-panel  { padding: 1.1rem 1.25rem; }
+.servicios-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    width: 100%;
+}
+
+/* Forzamos que cualquier botón inyectado en el grid sea táctil y grande */
+.servicios-grid button,
+.servicio-btn {
+    background: var(--clr-surface);
+    border: 2px solid var(--clr-border);
+    border-radius: var(--radius-lg);
+    padding: 2.5rem 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all var(--transition);
+    color: var(--text-main);
+    min-height: 160px;
+    font-size: clamp(1.2rem, 3vw, 1.5rem);
+    font-weight: 700;
+    width: 100%;
+    box-shadow: var(--shadow-soft);
+}
+
+.servicios-grid button:hover,
+.servicio-btn:hover {
+    border-color: var(--clr-rojo);
+    background: rgba(239, 68, 68, 0.07);
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-hover);
+}
+
+body.light-theme .servicios-grid button:hover,
+body.light-theme .servicio-btn:hover {
+    background: rgba(2, 132, 199, 0.05);
+    border-color: var(--clr-rojo);
+}
+
+.spinner {
+    width: 50px;
+    height: 50px;
+    border: 5px solid var(--clr-border);
+    border-top-color: var(--clr-rojo);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 3rem auto;
+}
+
+.ticket-panel {
+    background: var(--clr-surface);
+    border: 2px solid var(--clr-border);
+    border-radius: var(--radius-lg);
+    padding: clamp(2rem, 6vw, 4rem) clamp(1rem, 4vw, 3rem);
+    width: 100%;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    border-top: 8px solid var(--clr-rojo);
+}
+
+.servicio-label {
+    font-size: clamp(1.2rem, 3vw, 1.5rem);
+    color: var(--text-muted);
+    text-transform: uppercase;
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+.ticket-numero {
+    font-size: clamp(5rem, 15vw, 8rem);
+    font-weight: 900;
+    color: var(--clr-rojo);
+    margin: 1rem 0;
+    line-height: 1;
+    text-shadow: 0 0 40px rgba(239, 68, 68, 0.4);
+}
+
+body.light-theme .ticket-numero {
+    text-shadow: 0 0 40px rgba(2, 132, 199, 0.2);
+}
+
+.ticket-pref-label {
+    background: var(--clr-pref);
+    color: #000;
+    font-size: clamp(1rem, 2.5vw, 1.2rem);
+    padding: 10px 24px;
+    border-radius: 8px;
+    font-weight: bold;
+    letter-spacing: 2px;
+    display: inline-block;
+    margin-bottom: 1.5rem;
+}
+
+.ticket-msg {
+    color: var(--text-main);
+    font-weight: 500;
+    line-height: 1.5;
+    font-size: 1.2rem;
+}
+
+.ticket-impreso-ok {
+    background: rgba(52, 211, 153, 0.15);
+    border: 2px solid #34d399;
+    color: #10b981;
+    padding: 1.5rem 2rem;
+    border-radius: var(--radius-md);
+    font-weight: 700;
+    font-size: 1.2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    width: 100%;
+    margin-top: 1.5rem;
+}
+
+.ticket-actions {
+    display: flex;
+    gap: 1rem;
+    width: 100%;
+    margin-top: 2rem;
+    justify-content: center;
+}
+
+@media (max-width: 768px) {
+    .step-1-container > div {
+        flex-direction: column !important;
+        align-items: center !important;
+    }
+    .vkbd {
+        flex: 1 1 100% !important;
+        max-width: 100% !important;
+    }
+    .form-panel {
+        flex: 1 1 100% !important;
+        max-width: 100% !important;
+    }
+}
+
+@keyframes popIn {
+    0% {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
 }

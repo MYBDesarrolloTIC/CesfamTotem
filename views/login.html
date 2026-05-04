@@ -4,11 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ingreso Funcionarios — CESFAM</title>
-    <link rel="stylesheet" href="assets/css/login.css">
+    <!-- ¡AQUÍ ESTÁ EL CAMBIO! Apuntamos al Styles.css maestro -->
+    <link rel="stylesheet" href="assets/css/Styles.css">
 </head>
-<body>
+<body class="dark-theme">
 
-    <!-- ── Tarjeta de login ─────────────────────────────────────── -->
+    <!-- Botón de Tema (Esquina superior derecha) -->
+    <div style="position: absolute; top: 1rem; right: 1.5rem;">
+        <button id="btn-theme-toggle-login" class="btn-icon theme-btn" style="background: var(--clr-surface); border: 1px solid var(--clr-border); border-radius: 50%; width: 45px; height: 45px; font-size: 1.5rem;">☀️</button>
+    </div>
+
+    <!-- ── Tarjeta de login ── -->
     <div class="login-card">
         <div class="login-header">
             <div class="login-logo" aria-hidden="true">
@@ -33,23 +39,23 @@
                     inputmode="text"
                     aria-describedby="rut-hint rut-error"
                 >
-                <span class="input-hint" id="rut-hint">Ingrese su RUT sin puntos ni guión, o con formato XX.XXX.XXX-X</span>
+                <span class="input-hint" id="rut-hint">Ingrese su RUT sin puntos ni guión</span>
                 <span class="input-error" id="rut-error" role="alert"></span>
             </div>
 
-            <button type="submit" class="btn btn-primary" id="btn-continuar">
+            <button type="submit" class="btn btn-primary btn-full" id="btn-continuar">
                 Continuar →
             </button>
         </form>
     </div>
 
-    <p class="login-footer">CESFAM — Sistema de Gestión de Turnos</p>
-
-    <!-- ── Modal de selección de módulo ────────────────────────── -->
-    <div class="modal-overlay" id="modal-seleccion" hidden aria-modal="true" role="dialog" aria-labelledby="modal-titulo">
-        <div class="modal-card">
-            <h2 id="modal-titulo">Seleccione su módulo</h2>
-            <p class="modal-bienvenida">Bienvenido/a, RUT: <span class="rut-display" id="modal-rut"></span></p>
+    <!-- ── Modal de selección de módulo ── -->
+    <div class="modal-overlay" id="modal-seleccion" hidden aria-modal="true" role="dialog">
+        <div class="modal-card modal-box" style="padding: 2rem;">
+            <div class="modal-header" style="padding: 0 0 1rem 0;">
+                <h2 id="modal-titulo">Seleccione su módulo</h2>
+            </div>
+            <p class="modal-bienvenida" style="margin-top: 1rem;">Bienvenido/a, RUT: <span class="rut-display" id="modal-rut"></span></p>
 
             <div class="form-group">
                 <label for="select-modulo">Módulo de atención</label>
@@ -61,7 +67,7 @@
 
             <div class="form-group">
                 <label>Modo de atención</label>
-                <div class="modos-grid" id="modos-grid" role="radiogroup" aria-label="Modo de atención"></div>
+                <div class="modos-grid" id="modos-grid" role="radiogroup"></div>
             </div>
 
             <div class="modal-actions">
@@ -72,5 +78,19 @@
     </div>
 
     <script type="module" src="assets/js/login.js"></script>
+    <script>
+        // Lógica simple para el botón de tema en el Login
+        const btnThemeLogin = document.getElementById('btn-theme-toggle-login');
+        if (localStorage.getItem('cesfam_theme') === 'light') {
+            document.body.classList.add('light-theme');
+            btnThemeLogin.textContent = '🌙';
+        }
+        btnThemeLogin.addEventListener('click', () => {
+            document.body.classList.toggle('light-theme');
+            const isLight = document.body.classList.contains('light-theme');
+            localStorage.setItem('cesfam_theme', isLight ? 'light' : 'dark');
+            btnThemeLogin.textContent = isLight ? '🌙' : '☀️';
+        });
+    </script>
 </body>
 </html>

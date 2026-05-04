@@ -53,82 +53,93 @@
              PASO 1 — Datos del paciente (solo con RUT)
         ══════════════════════════════════════════════════════════ -->
         <section class="step" id="step-1" aria-label="Ingreso de datos">
-            <div class="form-panel">
-                <h2>Ingrese sus datos</h2>
+            
+            <!-- CONTENEDOR FLEX: Formulario Izquierda | Teclado Derecha -->
+            <div style="display: flex; flex-wrap: wrap; gap: 2.5rem; justify-content: center; align-items: flex-start; width: 100%;">
+                
+                <!-- LADO IZQUIERDO: Formulario, Errores y Botones -->
+                <div style="flex: 1 1 400px; max-width: 480px; display: flex; flex-direction: column; gap: 1.5rem;">
+                    <div class="form-panel">
+                        <h2>Ingrese sus datos</h2>
 
-                <div class="field-group">
-                    <label for="t-rut">RUT</label>
-                    <input
-                        type="text"
-                        id="t-rut"
-                        placeholder="12.345.678-9"
-                        maxlength="12"
-                        autocomplete="off"
-                        inputmode="none"
-                        readonly
-                        aria-describedby="t-rut-hint t-rut-error"
-                    >
-                    <span class="field-hint" id="t-rut-hint">Sin puntos, o con formato XX.XXX.XXX-X</span>
-                    <span class="field-error" id="t-rut-error" role="alert"></span>
-                </div>
+                        <div class="field-group">
+                            <label for="t-rut">RUT</label>
+                            <input
+                                type="text"
+                                id="t-rut"
+                                placeholder="12.345.678-9"
+                                maxlength="12"
+                                autocomplete="off"
+                                inputmode="none"
+                                readonly
+                                aria-describedby="t-rut-hint t-rut-error"
+                            >
+                            <span class="field-hint" id="t-rut-hint">Sin puntos, o con formato XX.XXX.XXX-X</span>
+                            <span class="field-error" id="t-rut-error" role="alert"></span>
+                        </div>
 
-                <div class="field-group">
-                    <label for="t-dob">Fecha de nacimiento</label>
-                    <input
-                        type="text"
-                        id="t-dob"
-                        placeholder="DD / MM / AAAA"
-                        maxlength="10"
-                        autocomplete="off"
-                        inputmode="none"
-                        readonly
-                        aria-describedby="t-dob-error"
-                    >
-                    <span class="field-error" id="t-dob-error" role="alert"></span>
-                </div>
+                        <div class="field-group">
+                            <label for="t-dob">Fecha de nacimiento</label>
+                            <input
+                                type="text"
+                                id="t-dob"
+                                placeholder="DD / MM / AAAA"
+                                maxlength="10"
+                                autocomplete="off"
+                                inputmode="none"
+                                readonly
+                                aria-describedby="t-dob-error"
+                            >
+                            <span class="field-error" id="t-dob-error" role="alert"></span>
+                        </div>
 
-                <div id="preferente-badge" class="preferente-badge" hidden aria-live="polite">
-                    ⭐ Atención Preferencial
-                </div>
-            </div>
-
-            <!-- Teclado táctil embebido dentro del paso 1 -->
-            <div class="vkbd" id="vkbd" aria-hidden="true">
-                <div class="vkbd-header">
-                    <span class="vkbd-label" id="vkbd-label">⌨ Ingrese su RUT</span>
-                    <span class="vkbd-preview" id="vkbd-preview">—</span>
-                </div>
-                <div class="vkbd-keys">
-                    <div class="vkbd-row">
-                        <button class="vk" data-val="7">7</button>
-                        <button class="vk" data-val="8">8</button>
-                        <button class="vk" data-val="9">9</button>
+                        <div id="preferente-badge" class="preferente-badge" hidden aria-live="polite">
+                            ⭐ Atención Preferencial
+                        </div>
                     </div>
-                    <div class="vkbd-row">
-                        <button class="vk" data-val="4">4</button>
-                        <button class="vk" data-val="5">5</button>
-                        <button class="vk" data-val="6">6</button>
-                    </div>
-                    <div class="vkbd-row">
-                        <button class="vk" data-val="1">1</button>
-                        <button class="vk" data-val="2">2</button>
-                        <button class="vk" data-val="3">3</button>
-                    </div>
-                    <div class="vkbd-row">
-                        <button class="vk vk-k" id="vk-k" data-val="K" title="Dígito verificador K">K</button>
-                        <button class="vk" data-val="0">0</button>
-                        <button class="vk vk-del" data-val="BACK" aria-label="Borrar">⌫</button>
+
+                    <!-- Mensaje de error general del paso 1 -->
+                    <div class="alert-error" id="step1-error" role="alert"></div>
+
+                    <!-- Botones debajo del formulario -->
+                    <div style="display:flex; gap:0.75rem; width:100%;">
+                        <button class="btn-outline-touch" id="btn-volver-0">← Volver</button>
+                        <button class="btn-touch btn-primary-touch btn-large" id="btn-verificar">
+                            Verificar datos →
+                        </button>
                     </div>
                 </div>
-            </div>
 
-            <div class="alert-error" id="step1-error" role="alert"></div>
+                <!-- LADO DERECHO: Teclado táctil embebido -->
+                <div class="vkbd" id="vkbd" aria-hidden="true" style="flex: 0 0 380px; margin: 0;">
+                    <div class="vkbd-header">
+                        <span class="vkbd-label" id="vkbd-label">⌨ Ingrese su RUT</span>
+                        <span class="vkbd-preview" id="vkbd-preview">—</span>
+                    </div>
+                    <div class="vkbd-keys">
+                        <div class="vkbd-row">
+                            <button class="vk" data-val="7">7</button>
+                            <button class="vk" data-val="8">8</button>
+                            <button class="vk" data-val="9">9</button>
+                        </div>
+                        <div class="vkbd-row">
+                            <button class="vk" data-val="4">4</button>
+                            <button class="vk" data-val="5">5</button>
+                            <button class="vk" data-val="6">6</button>
+                        </div>
+                        <div class="vkbd-row">
+                            <button class="vk" data-val="1">1</button>
+                            <button class="vk" data-val="2">2</button>
+                            <button class="vk" data-val="3">3</button>
+                        </div>
+                        <div class="vkbd-row">
+                            <button class="vk vk-k" id="vk-k" data-val="K" title="Dígito verificador K">K</button>
+                            <button class="vk" data-val="0">0</button>
+                            <button class="vk vk-del" data-val="BACK" aria-label="Borrar">⌫</button>
+                        </div>
+                    </div>
+                </div>
 
-            <div style="display:flex; gap:0.75rem; width:100%; max-width:480px;">
-                <button class="btn-outline-touch" id="btn-volver-0">← Volver</button>
-                <button class="btn-touch btn-primary-touch btn-large" id="btn-verificar">
-                    Verificar datos →
-                </button>
             </div>
         </section>
 

@@ -1,165 +1,172 @@
-/* ================================================
-   Visor Sala de Espera — CESFAM
-   Diseño oscuro, alto contraste, legible desde TV
-   ================================================ */
+/* ==========================================================================
+   VISOR DE SALA DE ESPERA (TV)
+   Temas: Oscuro (Azul Noche/Rojo) y Claro (Blanco/Azul Institucional)
+   ========================================================================== */
 
-*, *::before, *::after {
+:root {
+    --clr-bg: #070c18;
+    --clr-primary: #1a3f6b;
+    --clr-surface: #0f1e35;
+    --clr-border: #1e3a5f;
+    --clr-rojo: #ef4444;
+    --clr-pref: #fbbf24;
+    --text-main: #e8f4fd;
+    --text-muted: #7da7c4;
+    --radius-lg: 20px;
+    --shadow-soft: 0 8px 32px rgba(0, 0, 0, 0.4);
+}
+
+body.light-theme {
+    --clr-bg: #f4f6f9;
+    --clr-primary: #ffffff;
+    --clr-surface: #ffffff;
+    --clr-border: #e2e8f0;
+    --clr-rojo: #0284c7;
+    --text-main: #0f172a;
+    --text-muted: #64748b;
+    --shadow-soft: 0 4px 15px rgba(0, 0, 0, 0.05);
+}
+
+*,
+*::before,
+*::after {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
 }
 
-:root {
-    --color-fondo:       #070c18;
-    --color-superficie:  #0f1a30;
-    --color-borde:       #1e3a5f;
-    --color-primario:    #4fc3f7;
-    --color-preferencial:#ffd54f;
-    --color-texto:       #e8f4fd;
-    --color-texto-suave: #7bafd4;
-    --color-vacio:       #3a5272;
-    --radio-tarjeta:     12px;
-    --sombra:            0 4px 24px rgba(0, 0, 0, 0.6);
-}
-
-html, body {
-    height: 100%;
-    font-family: 'Segoe UI', 'Arial', sans-serif;
-    background-color: var(--color-fondo);
-    color: var(--color-texto);
+body {
+    height: 100vh;
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    background: var(--clr-bg);
+    color: var(--text-main);
+    display: flex;
+    flex-direction: column;
     overflow: hidden;
 }
 
-/* ---- HEADER ---- */
 .visor-header {
+    background: var(--clr-surface);
+    color: var(--text-main);
+    padding: clamp(1rem, 2vh, 1.5rem) clamp(1.5rem, 4vw, 3rem);
     display: flex;
-    align-items: center;
     justify-content: space-between;
-    padding: clamp(0.5rem, 1.5vh, 1.2rem) clamp(1rem, 3vw, 2.5rem);
-    background-color: var(--color-superficie);
-    border-bottom: 2px solid var(--color-borde);
-    box-shadow: var(--sombra);
+    align-items: center;
+    box-shadow: var(--shadow-soft);
+    border-bottom: 2px solid var(--clr-border);
 }
 
 .visor-titulo {
-    font-size: clamp(1.4rem, 3vw, 2.2rem);
-    font-weight: 700;
-    color: var(--color-primario);
-    letter-spacing: 0.05em;
+    font-size: clamp(1.5rem, 4vw, 2.5rem);
+    letter-spacing: 2px;
     text-transform: uppercase;
+    margin: 0;
+    color: var(--clr-rojo);
+    font-weight: 800;
 }
 
 .visor-reloj {
-    font-size: clamp(1.6rem, 3.5vw, 2.6rem);
+    font-size: clamp(1.5rem, 4vw, 2.5rem);
     font-weight: 700;
     font-variant-numeric: tabular-nums;
-    color: var(--color-texto);
-    letter-spacing: 0.04em;
-    min-width: 7ch;
-    text-align: right;
 }
 
-/* ---- GRID PRINCIPAL  3 columnas × 2 filas ---- */
 .visor-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    grid-template-rows: repeat(2, 1fr);
-    gap: clamp(0.6rem, 1.5vw, 1.2rem);
-    padding: clamp(0.6rem, 1.5vw, 1.2rem);
-    height: calc(100vh - var(--header-h, 72px));
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    grid-auto-rows: 1fr;
+    gap: clamp(1rem, 2vw, 1.5rem);
+    padding: clamp(1rem, 2vw, 1.5rem);
+    flex: 1;
+    overflow-y: auto;
 }
 
-/* ---- TARJETA DE ÁREA ---- */
 .area-card {
-    background-color: var(--color-superficie);
-    border: 1px solid var(--color-borde);
-    border-radius: var(--radio-tarjeta);
-    box-shadow: var(--sombra);
+    background: var(--clr-surface);
+    border: 1px solid var(--clr-border);
+    border-radius: var(--radius-lg);
     display: flex;
     flex-direction: column;
     overflow: hidden;
+    box-shadow: var(--shadow-soft);
 }
 
 .area-titulo {
-    padding: clamp(0.5rem, 1.2vh, 1rem) clamp(0.8rem, 2vw, 1.5rem);
-    font-size: clamp(1.1rem, 2.2vw, 1.8rem);
+    background: var(--clr-bg);
+    color: var(--clr-rojo);
+    text-align: center;
+    padding: clamp(0.5rem, 2vh, 1rem);
+    font-size: clamp(1.2rem, 3vw, 1.6rem);
+    letter-spacing: 2px;
+    margin: 0;
+    border-bottom: 1px solid var(--clr-border);
     font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: var(--color-primario);
-    background-color: rgba(79, 195, 247, 0.07);
-    border-bottom: 1px solid var(--color-borde);
-    flex-shrink: 0;
 }
 
-/* ---- MÓDULO CONTENEDOR (layout 70/30) ---- */
 .modulo-contenedor {
-    flex: 1;
     display: flex;
-    flex-direction: row;
-    overflow: hidden;
+    flex: 1;
+    flex-wrap: wrap;
 }
 
-/* ---- TICKET DESTACADO — sección izquierda ~70% ---- */
 .ticket-destacado {
-    flex: 7;
+    flex: 2 1 200px;
     display: flex;
     flex-direction: column;
-    align-items: center;
     justify-content: center;
-    gap: clamp(0.3rem, 1vh, 0.8rem);
-    padding: clamp(0.5rem, 2vh, 1.5rem) clamp(0.8rem, 2vw, 1.5rem);
-    border-right: 1px solid var(--color-borde);
-}
-
-.ticket-destacado.preferencial {
-    background-color: rgba(255, 213, 79, 0.05);
-    border-right-color: var(--color-preferencial);
+    align-items: center;
+    border-right: 1px solid var(--clr-border);
+    background: var(--clr-surface);
+    padding: 1rem;
 }
 
 .ticket-destacado__numero {
-    font-size: clamp(3.5rem, 9vw, 7.5rem);
+    font-size: clamp(3rem, 8vw, 7.5rem);
     font-weight: 900;
-    color: var(--color-texto);
-    letter-spacing: 0.04em;
-    font-variant-numeric: tabular-nums;
+    color: var(--text-main);
     line-height: 1;
 }
 
-.ticket-destacado.preferencial .ticket-destacado__numero {
-    color: var(--color-preferencial);
-    text-shadow: 0 0 28px rgba(255, 213, 79, 0.45);
-}
-
 .ticket-destacado__box {
-    font-size: clamp(0.85rem, 1.8vw, 1.5rem);
-    font-weight: 600;
-    color: var(--color-texto-suave);
-    letter-spacing: 0.06em;
+    font-size: clamp(1rem, 2.5vw, 1.5rem);
+    font-weight: 700;
+    color: var(--text-muted);
+    margin-top: 1rem;
     text-transform: uppercase;
+    text-align: center;
 }
 
-/* ---- LISTA SECUNDARIOS — sección derecha ~30% ---- */
+.ticket-destacado.preferencial {
+    background: rgba(251, 191, 36, 0.05);
+    border-right-color: var(--clr-pref);
+}
+
+.ticket-destacado.preferencial .ticket-destacado__numero {
+    color: var(--clr-pref);
+    animation: pulseText 1.5s infinite;
+}
+
+body:not(.light-theme) .ticket-destacado.preferencial .ticket-destacado__numero {
+    text-shadow: 0 0 28px rgba(251, 191, 36, 0.45);
+}
+
 .lista-secundarios {
-    flex: 3;
-    list-style: none;
+    flex: 1 1 100px;
     display: flex;
     flex-direction: column;
     justify-content: center;
-    gap: 0;
-    padding: clamp(0.5rem, 1.5vh, 1rem) clamp(0.5rem, 1.5vw, 1rem);
-    overflow: hidden;
+    background: var(--clr-surface);
+    padding: 0 1rem;
+    margin: 0;
 }
 
 .ticket-secundario {
-    font-size: clamp(1.2rem, 2.8vw, 2.2rem);
-    font-weight: 700;
-    color: var(--color-texto-suave);
-    font-variant-numeric: tabular-nums;
-    letter-spacing: 0.03em;
+    font-size: clamp(1.2rem, 3vw, 2.2rem);
+    font-weight: 800;
+    color: var(--text-muted);
     text-align: center;
-    padding: clamp(0.25rem, 0.8vh, 0.55rem) 0;
-    border-bottom: 1px solid var(--color-borde);
+    padding: 1rem 0;
+    border-bottom: 1px solid var(--clr-border);
 }
 
 .ticket-secundario:last-child {
@@ -167,37 +174,45 @@ html, body {
 }
 
 .ticket-secundario.preferencial {
-    color: var(--color-preferencial);
+    color: var(--clr-pref);
 }
 
-/* ---- ESTADO VACÍO ---- */
 .ticket-vacio {
     flex: 1;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: clamp(0.9rem, 1.8vw, 1.3rem);
-    color: var(--color-vacio);
+    font-size: clamp(1rem, 2vw, 1.5rem);
+    color: var(--text-muted);
     font-style: italic;
-    letter-spacing: 0.05em;
-}
-
-/* ---- RESPONSIVE TV / FULLSCREEN ---- */
-@media (max-width: 1280px) {
-    .visor-grid {
-        grid-template-columns: repeat(2, 1fr);
-        grid-template-rows: repeat(3, 1fr);
-    }
+    font-weight: 600;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    text-align: center;
 }
 
 @media (max-width: 768px) {
-    .visor-grid {
-        grid-template-columns: 1fr;
-        grid-template-rows: unset;
+    body {
         overflow-y: auto;
+    }
+    .visor-grid {
         height: auto;
     }
-    html, body {
-        overflow: auto;
+    .ticket-destacado {
+        border-right: none;
+        border-bottom: 1px solid var(--clr-border);
+    }
+}
+
+@keyframes pulseText {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+    100% {
+        transform: scale(1);
     }
 }

@@ -93,47 +93,26 @@ function renderizarColumna(id, historial, cola, esPref) {
 
 // ── Procesamiento del payload de la API ───────────────────────────────────────
 
+// Reemplaza desde la línea 56 hasta la 87 de tu visor.js original
+
+// ... (mismo código de arriba) ...
+
 function renderizarTodo(data) {
-    const llamadosNormal   = [];
-    const llamadosPref     = [];
-    const colaNormal       = [];
-    const colaPreferencial = [];
+    let todosLlamados = [];
+    let todaCola = [];
 
-    // Separar TODO el payload en 4 cubos: llamados (con box) vs cola (sin box), ×2 categorías
-    for (const area in data) {
-        data[area].forEach(ticket => {
-            if (ticket.box_asignado) {
-                (ticket.es_preferencial ? llamadosPref : llamadosNormal).push(ticket);
-            } else {
-                (ticket.es_preferencial ? colaPreferencial : colaNormal).push(ticket);
-            }
-        });
-    }
+    // AQUÍ ESTÁ LA CLAVE: Solo sacamos el arreglo de 'SOME'
+    const ticketsSome = data['SOME'] || [];
 
-    // Actualizar historial: agregar únicamente los tickets recién llamados (evitar duplicados)
-    if (primeraCarga) {
-        historialNormal       = [...llamadosNormal];
-        historialPreferencial = [...llamadosPref];
-        primeraCarga = false;
-    } else {
-        const agregarNuevos = (historial, recientes) => {
-            recientes.forEach(nuevo => {
-                const existe = historial.find(
-                    t => t.ticket_numero === nuevo.ticket_numero && t.box_asignado === nuevo.box_asignado
-                );
-                if (!existe) historial.unshift(nuevo);
-            });
-        };
-        agregarNuevos(historialNormal, llamadosNormal);
-        agregarNuevos(historialPreferencial, llamadosPref);
-    }
+    ticketsSome.forEach(ticket => {
+        if (ticket.box_asignado) {
+            todosLlamados.push(ticket);
+        } else {
+            todaCola.push(ticket);
+        }
+    });
 
-    if (historialNormal.length > MAX_HIST)       historialNormal       = historialNormal.slice(0, MAX_HIST);
-    if (historialPreferencial.length > MAX_HIST) historialPreferencial = historialPreferencial.slice(0, MAX_HIST);
-
-    renderizarColumna('contenedor-normal',       historialNormal,       colaNormal,       false);
-    renderizarColumna('contenedor-preferencial', historialPreferencial, colaPreferencial, true);
-}
+// ... (resto del código idéntico) ...
 
 // ── SSE (tiempo real) ─────────────────────────────────────────────────────────
 

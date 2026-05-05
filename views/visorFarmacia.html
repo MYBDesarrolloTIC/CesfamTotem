@@ -4,54 +4,61 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <title>Visor de Farmacia — CESFAM</title>
-    
-    <!-- Asegúrate de crear este archivo o nombrarlo como prefieras -->
-    <link rel="stylesheet" href="assets/css/visor-farmacia.css" />
+    <title>Visor Farmacia - CESFAM</title>
+    <!-- Enlace al mismo CSS -->
+    <link rel="stylesheet" href="assets/css/visor.css" />
 </head>
 <body>
-
     <header class="visor-header">
-        <h1 class="visor-titulo">CESFAM &mdash; FARMACIA</h1>
-        
-        <!-- Agrupamos el reloj y el botón de tema -->
-        <div style="display: flex; align-items: center; gap: 1.5rem;">
-            <div class="visor-reloj" id="reloj" aria-live="polite"></div>
-            <!-- Botón de Tema (Misma clase que usas en Styles.css) -->
-            <button id="btn-theme-toggle" class="theme-btn" title="Cambiar a Tema Claro">☀️</button>
+        <h1 class="visor-titulo">FARMACIA</h1>
+        <div class="visor-header__right">
+            <div class="visor-reloj" id="reloj" aria-live="polite">--:--</div>
+            <button id="btn-theme-toggle" class="theme-btn" title="Cambiar Tema">&#9728;&#65039;</button>
         </div>
     </header>
 
-    <main class="visor-grid">
-        <!-- El ID area-farmacia es detectado automáticamente por tu visor.js -->
-        <section class="area-card" id="area-farmacia">
-            <h2 class="area-titulo">Turnos en Atención</h2>
-            
-            <!-- DATOS VACÍOS: Aquí inyectará el JS -->
-            <div class="modulo-contenedor" aria-label="Turnos Farmacia"></div>
+    <main class="visor-layout">
+        <!-- PANEL IZQUIERDO: Turno Actual -->
+        <section class="panel-izquierdo">
+            <div class="bloque-grupo">
+                <div class="bloque-header" id="lbl-ticket">Ticket</div>
+                <div class="bloque-body" id="actual-ticket">--</div>
+            </div>
+            <div class="bloque-grupo">
+                <div class="bloque-header" id="lbl-modulo">Módulo</div>
+                <div class="bloque-body" id="actual-modulo">--</div>
+            </div>
+        </section>
+
+        <!-- PANEL DERECHO: Historial -->
+        <section class="panel-derecho">
+            <div class="historial-cabecera">
+                <div class="col-titulo">Ticket</div>
+                <div class="col-titulo">Módulo</div>
+            </div>
+            <div class="historial-lista" id="contenedor-historial">
+                <!-- El JS inyectará las filas aquí -->
+            </div>
         </section>
     </main>
 
-    <!-- Tu JS original -->
-    <script type="module" src="assets/js/visor.js"></script>
-    
-    <!-- Lógica del botón Tema Claro/Oscuro -->
+    <script type="module" src="assets/js/visorFarmacia.js"></script>
     <script>
-        const btnTheme = document.getElementById('btn-theme-toggle');
-        
-        // Cargar preferencia guardada
-        if (localStorage.getItem('cesfam_theme') === 'light') {
-            document.body.classList.add('light-theme');
-            btnTheme.textContent = '🌙';
-        }
-        
-        // Evento de cambio
-        btnTheme.addEventListener('click', () => {
-            document.body.classList.toggle('light-theme');
-            const isLight = document.body.classList.contains('light-theme');
-            localStorage.setItem('cesfam_theme', isLight ? 'light' : 'dark');
-            btnTheme.textContent = isLight ? '🌙' : '☀️';
-        });
+        (function () {
+            const btn  = document.getElementById('btn-theme-toggle');
+            const body = document.body;
+            const KEY  = 'cesfam_theme';
+            
+            if (localStorage.getItem(KEY) === 'light') {
+                body.classList.add('light-theme');
+                btn.innerHTML = '&#127769;';
+            }
+            btn.addEventListener('click', function () {
+                const isLight = body.classList.toggle('light-theme');
+                localStorage.setItem(KEY, isLight ? 'light' : 'dark');
+                btn.innerHTML = isLight ? '&#127769;' : '&#9728;&#65039;';
+            });
+        }());
     </script>
 </body>
 </html>

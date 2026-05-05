@@ -1,38 +1,30 @@
 /* ============================================================
-   VISOR — SALA DE ESPERA CESFAM
+   VISOR - SALA DE ESPERA CESFAM (Estructura Dividida)
    ============================================================ */
-
 :root {
     --bg:            #070c18;
     --bg-card:       #0d1828;
     --border-card:   #1a3350;
     --header-bg:     #050912;
-
     --text:          #e8f4fd;
     --text-muted:    #536e88;
-
     --normal:        #3b82f6;
     --normal-dim:    rgba(59, 130, 246, 0.12);
     --normal-glow:   rgba(59, 130, 246, 0.22);
-
     --pref:          #f59e0b;
     --pref-dim:      rgba(245, 158, 11, 0.10);
     --pref-glow:     rgba(245, 158, 11, 0.22);
 }
-
 .light-theme {
     --bg:            #dce8f5;
     --bg-card:       #f4f9ff;
     --border-card:   #b8d0ea;
     --header-bg:     #1a3f6b;
-
     --text:          #0d1e30;
     --text-muted:    #4a6a88;
-
     --normal:        #1d4ed8;
     --normal-dim:    rgba(29, 78, 216, 0.10);
     --normal-glow:   rgba(29, 78, 216, 0.18);
-
     --pref:          #b45309;
     --pref-dim:      rgba(180, 83, 9, 0.08);
     --pref-glow:     rgba(180, 83, 9, 0.18);
@@ -51,209 +43,184 @@ html, body {
 body {
     display: flex;
     flex-direction: column;
-    min-height: 100vh;
     background: var(--bg);
     color: var(--text);
     font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
     overflow: hidden;
+    transition: background 0.3s, color 0.3s;
 }
 
-/* ── Header ─────────────────────────────────────────────────── */
-
+/* Header Original */
 .visor-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 0.8rem 2rem;
+    padding: 1rem 2rem;
     background: var(--header-bg);
     border-bottom: 4px solid var(--normal);
     flex-shrink: 0;
-    gap: 1rem;
 }
-
 .visor-titulo {
-    font-size: clamp(1rem, 2.4vw, 1.75rem);
+    font-size: clamp(1.5rem, 3vw, 2.5rem);
     font-weight: 800;
     letter-spacing: 0.1em;
     text-transform: uppercase;
     color: #e8f4fd;
 }
-
 .visor-header__right {
     display: flex;
     align-items: center;
-    gap: 1.25rem;
+    gap: 1.5rem;
 }
-
 .visor-reloj {
-    font-size: clamp(1.4rem, 3vw, 2.2rem);
+    font-size: clamp(1.5rem, 3vw, 2.5rem);
     font-weight: 700;
-    font-variant-numeric: tabular-nums;
-    letter-spacing: 0.04em;
     color: #e8f4fd;
-    min-width: 9ch;
-    text-align: right;
 }
-
 .theme-btn {
     background: rgba(255, 255, 255, 0.08);
     border: 1px solid rgba(255, 255, 255, 0.18);
     border-radius: 6px;
-    padding: 0.3rem 0.55rem;
-    font-size: 1.1rem;
+    padding: 0.5rem;
+    font-size: 1.5rem;
     cursor: pointer;
-    line-height: 1;
+    color: #e8f4fd;
     transition: background 0.2s;
 }
-
 .theme-btn:hover {
     background: rgba(255, 255, 255, 0.18);
 }
 
-/* ── Main Grid — 2 columnas ─────────────────────────────────── */
-
-.visor-grid {
+/* Layout Principal (Igual a la imagen) */
+.visor-layout {
     flex: 1;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1.5rem;
-    padding: 1.5rem;
-    min-height: 0;
+    display: flex;
+    gap: 2rem;
+    padding: 2rem;
+    height: calc(100vh - 90px);
 }
 
-/* ── Area Cards ─────────────────────────────────────────────── */
-
-.area-card {
-    background: var(--bg-card);
-    border: 1px solid var(--border-card);
-    border-top: 5px solid var(--normal);
-    border-radius: 14px;
+/* Panel Izquierdo (Actual) */
+.panel-izquierdo {
+    flex: 1.2;
     display: flex;
     flex-direction: column;
-    padding: 1.25rem 1.5rem 1.5rem;
-    gap: 1rem;
+    justify-content: center;
+    gap: 2.5rem;
+}
+
+.bloque-grupo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.bloque-header {
+    background: var(--normal);
+    color: #ffffff;
+    padding: 0.5rem 3rem;
+    border-radius: 20px 20px 0 0;
+    font-size: clamp(1.5rem, 3vw, 2.2rem);
+    font-weight: 800;
+    margin-bottom: -2px; /* Solapar borde */
+    z-index: 2;
+    text-transform: uppercase;
+    border: 2px solid var(--border-card);
+    border-bottom: none;
+    transition: background 0.3s, border-color 0.3s;
+}
+
+.bloque-body {
+    background: var(--bg-card);
+    border: 4px solid var(--normal);
+    border-radius: 20px;
+    width: 100%;
+    text-align: center;
+    padding: 2rem;
+    font-size: clamp(4rem, 8vw, 8rem);
+    font-weight: 900;
+    color: var(--text);
+    box-shadow: 0 0 30px var(--normal-glow);
+    z-index: 1;
+    transition: all 0.3s;
+    letter-spacing: 2px;
+}
+
+/* Modificadores Panel Izquierdo para PREFERENCIAL */
+.bloque-header.pref { background: var(--pref); border-color: var(--pref); }
+.bloque-body.pref { border-color: var(--pref); color: var(--pref); box-shadow: 0 0 30px var(--pref-glow); }
+
+
+/* Panel Derecho (Historial/Cola) */
+.panel-derecho {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.historial-cabecera {
+    display: flex;
+    gap: 1.5rem;
+}
+
+.col-titulo {
+    flex: 1;
+    background: var(--normal);
+    color: #ffffff;
+    text-align: center;
+    padding: 1rem;
+    border-radius: 15px;
+    font-size: clamp(1.2rem, 2.5vw, 2rem);
+    font-weight: 800;
+    border: 2px solid var(--border-card);
+    transition: background 0.3s, border-color 0.3s;
+}
+
+.historial-lista {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
     overflow: hidden;
 }
 
-.preferencial-card {
-    border-top-color: var(--pref);
-}
-
-.area-titulo {
-    font-size: clamp(0.85rem, 1.7vw, 1.3rem);
-    font-weight: 700;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--normal);
-    padding-bottom: 0.75rem;
-    border-bottom: 1px solid var(--border-card);
-    flex-shrink: 0;
-}
-
-.titulo-pref {
-    color: var(--pref);
-}
-
-.modulo-contenedor {
-    flex: 1;
+.historial-fila {
     display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-    min-height: 0;
-}
-
-/* ── Empty State ────────────────────────────────────────────── */
-
-.ticket-vacio {
-    flex: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--text-muted);
-    font-size: clamp(0.9rem, 1.5vw, 1.1rem);
-    font-style: italic;
-    letter-spacing: 0.05em;
-}
-
-/* ── Ticket Destacado (Actual) ──────────────────────────────── */
-
-.ticket-destacado {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    background: var(--normal-dim);
-    border: 2px solid var(--normal);
-    border-radius: 12px;
-    padding: clamp(0.75rem, 2vw, 1.2rem) clamp(1rem, 2.5vw, 1.75rem);
-    gap: 1rem;
-    box-shadow: 0 0 28px var(--normal-glow);
+    gap: 1.5rem;
     animation: slideIn 0.35s ease;
-    flex-shrink: 0;
 }
 
-.ticket-destacado.preferencial {
-    background: var(--pref-dim);
-    border-color: var(--pref);
-    box-shadow: 0 0 28px var(--pref-glow);
-}
-
-.ticket-destacado__numero {
-    font-size: clamp(2.5rem, 5.5vw, 5rem);
-    font-weight: 900;
-    color: var(--normal);
-    line-height: 1;
-    letter-spacing: -0.02em;
-}
-
-.ticket-destacado.preferencial .ticket-destacado__numero {
-    color: var(--pref);
-}
-
-.ticket-destacado__box {
-    font-size: clamp(0.85rem, 1.8vw, 1.2rem);
-    font-weight: 600;
-    color: var(--text-muted);
-    text-align: right;
-    line-height: 1.4;
-}
-
-/* ── Lista Secundarios (Próximos) ───────────────────────────── */
-
-.lista-secundarios {
-    list-style: none;
-    display: flex;
-    flex-direction: column;
-    gap: 0.45rem;
-}
-
-.ticket-secundario {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0.45rem 1rem;
-    border-radius: 8px;
-    border: 1px solid var(--border-card);
-    opacity: 0.75;
-}
-
-.ticket-secundario.preferencial {
-    border-color: rgba(245, 158, 11, 0.28);
-}
-
-.sec-num {
-    font-size: clamp(0.85rem, 1.6vw, 1.15rem);
-    font-weight: 700;
+.hist-celda {
+    flex: 1;
+    background: var(--bg-card);
+    border: 3px solid var(--normal);
+    border-radius: 15px;
+    text-align: center;
+    padding: 1.2rem 1rem;
+    font-size: clamp(2rem, 4vw, 3.5rem);
+    font-weight: 800;
     color: var(--text);
+    box-shadow: 0 0 15px var(--normal-glow);
+    transition: all 0.3s;
 }
 
-.sec-box {
-    font-size: clamp(0.75rem, 1.2vw, 0.95rem);
-    color: var(--text-muted);
+/* Modificador Panel Derecho para PREFERENCIAL */
+.historial-fila.pref .hist-celda { 
+    border-color: var(--pref); 
+    color: var(--pref); 
+    box-shadow: 0 0 15px var(--pref-glow); 
 }
 
-/* ── Animación ──────────────────────────────────────────────── */
-
+/* Animaciones */
 @keyframes slideIn {
-    from { opacity: 0.4; transform: translateY(-8px); }
-    to   { opacity: 1;   transform: translateY(0);    }
+    from { opacity: 0; transform: translateX(20px); }
+    to   { opacity: 1; transform: translateX(0);    }
+}
+.blink-update {
+    animation: blink 1s ease-in-out 3;
+}
+@keyframes blink {
+    0% { background: var(--text); color: var(--bg-card); }
+    50% { background: var(--bg-card); color: var(--text); }
+    100% { background: var(--text); color: var(--bg-card); }
 }

@@ -4,55 +4,62 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <title>Sala de Espera — CESFAM</title>
+    <title>Visor SOME 2 - CESFAM</title>
+    <!-- Enlace vital para que carguen los colores -->
     <link rel="stylesheet" href="assets/css/visor.css" />
 </head>
 <body>
-
     <header class="visor-header">
-        <h1 class="visor-titulo">CESFAM &mdash; SALA DE ESPERA</h1>
+        <h1 class="visor-titulo">SOME 2</h1>
         <div class="visor-header__right">
-            <div class="visor-reloj" id="reloj" aria-live="polite"></div>
+            <div class="visor-reloj" id="reloj" aria-live="polite">--:--</div>
             <button id="btn-theme-toggle" class="theme-btn" title="Cambiar Tema">&#9728;&#65039;</button>
         </div>
     </header>
 
-    <main class="visor-grid">
-
-        <!-- COLUMNA IZQUIERDA: Turnos Normales -->
-        <section class="area-card" id="area-normal">
-            <h2 class="area-titulo">Llamados Normales</h2>
-            <div class="modulo-contenedor" id="contenedor-normal" aria-label="Turnos Normales" aria-live="polite"></div>
+    <main class="visor-layout">
+        <!-- PANEL IZQUIERDO: Turno Actual -->
+        <section class="panel-izquierdo">
+            <div class="bloque-grupo">
+                <div class="bloque-header" id="lbl-ticket">Ticket</div>
+                <div class="bloque-body" id="actual-ticket">--</div>
+            </div>
+            <div class="bloque-grupo">
+                <div class="bloque-header" id="lbl-modulo">Módulo</div>
+                <div class="bloque-body" id="actual-modulo">--</div>
+            </div>
         </section>
 
-        <!-- COLUMNA DERECHA: Turnos Preferenciales -->
-        <section class="area-card preferencial-card" id="area-preferencial">
-            <h2 class="area-titulo titulo-pref">Llamados Preferenciales</h2>
-            <div class="modulo-contenedor" id="contenedor-preferencial" aria-label="Turnos Preferenciales" aria-live="polite"></div>
+        <!-- PANEL DERECHO: Historial -->
+        <section class="panel-derecho">
+            <div class="historial-cabecera">
+                <div class="col-titulo">Ticket</div>
+                <div class="col-titulo">Módulo</div>
+            </div>
+            <div class="historial-lista" id="contenedor-historial">
+                <!-- El JS inyectará las filas aquí -->
+            </div>
         </section>
-
     </main>
 
     <script type="module" src="assets/js/visor.js"></script>
-
     <script>
         (function () {
             const btn  = document.getElementById('btn-theme-toggle');
             const body = document.body;
             const KEY  = 'cesfam_theme';
-
+            
+            // Tema
             if (localStorage.getItem(KEY) === 'light') {
                 body.classList.add('light-theme');
-                btn.textContent = '🌙';
+                btn.innerHTML = '&#127769;'; // Luna
             }
-
             btn.addEventListener('click', function () {
                 const isLight = body.classList.toggle('light-theme');
                 localStorage.setItem(KEY, isLight ? 'light' : 'dark');
-                btn.textContent = isLight ? '🌙' : '☀️';
+                btn.innerHTML = isLight ? '&#127769;' : '&#9728;&#65039;';
             });
         }());
     </script>
-
 </body>
 </html>

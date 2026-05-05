@@ -8,7 +8,7 @@
     <!-- Enlace vital para que carguen los colores -->
     <link rel="stylesheet" href="assets/css/Styles.css" />
 </head>
-<body>
+<body class="layout-visor">
     <header class="visor-header">
         <h1 class="visor-titulo">SOME 2</h1>
         <div class="visor-header__right">
@@ -17,7 +17,6 @@
             <button id="btn-theme-toggle" class="theme-btn" title="Cambiar Tema">&#9728;&#65039;</button>
         </div>
     </header>
-
     <main class="visor-layout">
         <!-- PANEL IZQUIERDO: Turno Actual -->
         <section class="panel-izquierdo">
@@ -30,7 +29,6 @@
                 <div class="bloque-body" id="actual-modulo">--</div>
             </div>
         </section>
-
         <!-- PANEL DERECHO: Historial -->
         <section class="panel-derecho">
             <div class="historial-cabecera">
@@ -42,7 +40,6 @@
             </div>
         </section>
     </main>
-
     <script type="module" src="assets/js/visor.js"></script>
     <script>
         (function () {
@@ -50,7 +47,6 @@
             const body = document.body;
             const KEY  = 'cesfam_theme';
             
-            // Tema
             if (localStorage.getItem(KEY) === 'light') {
                 body.classList.add('light-theme');
                 btn.innerHTML = '&#127769;'; // Luna

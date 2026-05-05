@@ -49,75 +49,45 @@
             </div>
         </section>
 
-        <!-- ══════════════════════════════════════════════════════
-             PASO 1 — Datos del paciente (solo con RUT)
-        ══════════════════════════════════════════════════════════ -->
+        <!-- === PASO 1 === -->
         <section class="step" id="step-1" aria-label="Ingreso de datos">
-            
-            <!-- CONTENEDOR FLEX: Formulario Izquierda | Teclado Derecha -->
-            <div style="display: flex; flex-wrap: wrap; gap: 2.5rem; justify-content: center; align-items: flex-start; width: 100%;">
+            <!-- Usamos la clase del CSS maestro para envolver Formulario y Teclado -->
+            <div class="step-1-container">
                 
-                <!-- LADO IZQUIERDO: Formulario, Errores y Botones -->
-                <div style="flex: 1 1 400px; max-width: 480px; display: flex; flex-direction: column; gap: 1.5rem;">
-                    <div class="form-panel">
-                        <h2>Ingrese su RUT</h2>
-
-                        <div class="field-group">
-                            <label for="t-rut">RUT</label>
-                            <input
-                                type="text"
-                                id="t-rut"
-                                placeholder="12.345.678-9"
-                                maxlength="12"
-                                autocomplete="off"
-                                inputmode="none"
-                                readonly
-                                aria-describedby="t-rut-hint t-rut-error"
-                            >
-                            <span class="field-hint" id="t-rut-hint">Sin puntos, o con formato XX.XXX.XXX-X</span>
-                            <span class="field-error" id="t-rut-error" role="alert"></span>
-                        </div>
-
-                        <!-- Panel de confirmación: se muestra cuando el paciente ya existe en el sistema -->
-                        <div id="found-panel" class="found-panel" hidden aria-live="polite">
-                            <span class="found-icon" aria-hidden="true">✓</span>
-                            <p id="found-msg">—</p>
-                        </div>
-
-                        <!-- Campo fecha de nacimiento: visible solo para pacientes nuevos -->
-                        <div class="field-group" id="dob-group" hidden>
-                            <label for="t-dob">Fecha de nacimiento</label>
-                            <input
-                                type="text"
-                                id="t-dob"
-                                placeholder="DD / MM / AAAA"
-                                maxlength="10"
-                                autocomplete="off"
-                                inputmode="none"
-                                readonly
-                                aria-describedby="t-dob-error"
-                            >
-                            <span class="field-error" id="t-dob-error" role="alert"></span>
-                        </div>
+                <!-- LADO IZQUIERDO: Formulario -->
+                <div class="form-panel">
+                    <h2>Ingrese su RUT</h2>
+                    <div class="field-group">
+                        <label for="t-rut">RUT</label>
+                        <input type="text" id="t-rut" placeholder="12.345.678-9" maxlength="12" autocomplete="off" inputmode="none" readonly aria-describedby="t-rut-hint t-rut-error">
+                        <span class="field-hint" id="t-rut-hint">Sin puntos, o con formato XX.XXX.XXX-X</span>
+                        <span class="field-error" id="t-rut-error" role="alert"></span>
                     </div>
 
-                    <!-- Mensaje de error general del paso 1 -->
-                    <div class="alert-error" id="step1-error" role="alert"></div>
+                    <div id="found-panel" class="found-panel" hidden aria-live="polite">
+                        <span class="found-icon" aria-hidden="true">✓</span>
+                        <p id="found-msg"></p>
+                    </div>
 
-                    <!-- Botones debajo del formulario -->
-                    <div style="display:flex; gap:0.75rem; width:100%;">
+                    <div class="field-group" id="dob-group" hidden>
+                        <label for="t-dob">Fecha de nacimiento</label>
+                        <input type="text" id="t-dob" placeholder="DD / MM / AAAA" maxlength="10" autocomplete="off" inputmode="none" readonly aria-describedby="t-dob-error">
+                        <span class="field-error" id="t-dob-error" role="alert"></span>
+                    </div>
+                    
+                    <div class="alert-error" id="step1-error" role="alert"></div>
+                    
+                    <div style="display:flex; gap:0.75rem; width:100%; margin-top: 1rem;">
                         <button class="btn-outline-touch" id="btn-volver-0">← Volver</button>
-                        <button class="btn-touch btn-primary-touch btn-large" id="btn-verificar">
-                            Buscar →
-                        </button>
+                        <button class="btn-touch btn-primary-touch btn-large" id="btn-verificar">Buscar →</button>
                     </div>
                 </div>
 
-                <!-- LADO DERECHO: Teclado táctil embebido -->
-                <div class="vkbd" id="vkbd" aria-hidden="true" style="flex: 0 0 380px; margin: 0;">
+                <!-- LADO DERECHO: Teclado virtual -->
+                <div class="vkbd" id="vkbd" aria-hidden="true">
                     <div class="vkbd-header">
                         <span class="vkbd-label" id="vkbd-label">⌨ Ingrese su RUT</span>
-                        <span class="vkbd-preview" id="vkbd-preview">—</span>
+                        <span class="vkbd-preview" id="vkbd-preview">_</span>
                     </div>
                     <div class="vkbd-keys">
                         <div class="vkbd-row">
@@ -142,24 +112,20 @@
                         </div>
                     </div>
                 </div>
-
             </div>
         </section>
 
-        <!-- ══════════════════════════════════════════════════════
-             PASO 2 — Selección de servicio
-        ══════════════════════════════════════════════════════════ -->
+        <!-- === PASO 2 === -->
         <section class="step" id="step-2" aria-label="Selección de servicio">
             <p class="servicios-titulo">¿Qué atención necesita?</p>
-
             <div class="alert-error" id="step2-error" role="alert"></div>
-
-            <div class="servicios-grid" id="servicios-grid" aria-label="Servicios disponibles">
-                <!-- Se rellena dinámicamente con JS -->
-                <div class="spinner" aria-label="Cargando servicios…"></div>
+            
+            <!-- max-width: 850px limita el ancho para forzar exactamente 3 columnas arriba y 3 abajo -->
+            <div class="servicios-grid" id="servicios-grid" aria-label="Servicios disponibles" style="max-width: 850px; margin: 0 auto;">
+                <div class="spinner" aria-label="Cargando servicios..."></div>
             </div>
-
-            <button class="btn-outline-touch" id="btn-volver-1">← Volver</button>
+            
+            <button class="btn-outline-touch" id="btn-volver-1" style="margin-top: 2rem;">← Volver</button>
         </section>
 
         <!-- ══════════════════════════════════════════════════════

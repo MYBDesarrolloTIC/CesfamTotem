@@ -382,10 +382,11 @@ document.addEventListener('DOMContentLoaded', () => {
             const btn = document.createElement('button');
             btn.className = 'servicio-btn';
             btn.setAttribute('aria-label', s.nombre);
+            // AQUÍ QUEDÓ ELIMINADA LA LÍNEA DEL "S-###"
             btn.innerHTML = `
-                <span class="s-icon">${ICONOS_SERVICIO[s.nombre] ?? '🏷️'}</span>
-                <span class="s-nombre">${s.nombre}</span>
-                <span class="s-letra">${s.letra}-###</span>`;
+                <span class="s-icon">${ICONOS_SERVICIO[s.nombre] ?? '💊'}</span>
+                <span class="s-nombre">${s.nombre}</span>`;
+            
             btn.addEventListener('click', () => elegirServicio(s));
             serviciosGrid.appendChild(btn);
         });

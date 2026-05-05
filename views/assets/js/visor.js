@@ -1,29 +1,15 @@
 import ApiService from '../../../model/api.js';
 
-// URL del endpoint SSE — resuelto relativo a este módulo
-const SSE_URL = new URL('../../../controller/visor_sse.php', import.meta.url).href;
-
-const AREAS      = ['SOME', 'Farmacia', 'Pedir Hora', 'Exámenes', 'Morbilidad', 'Vacunatorio'];
+const SSE_URL    = new URL('../../../controller/visor_sse.php', import.meta.url).href;
 const POLLING_MS = 3000;
+const MAX_HIST   = 4;
 
-// Historiales locales para ordenar los "últimos llamados"
-let historialNormal = [];
+// Historial de tickets llamados (persiste entre polls para mantener el último llamado visible)
+let historialNormal       = [];
 let historialPreferencial = [];
-let primeraCarga = true;
+let primeraCarga          = true;
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
-
-function slugify(area) {
-    return area
-        .toLowerCase()
-        .replace(/\s+/g, '-')
-        .replace(/[áàâä]/g, 'a')
-        .replace(/[éèêë]/g, 'e')
-        .replace(/[íìîï]/g, 'i')
-        .replace(/[óòôö]/g, 'o')
-        .replace(/[úùûü]/g, 'u')
-        .replace(/[^a-z0-9-]/g, '');
-}
 
 function esc(str) {
     const d = document.createElement('div');
@@ -31,117 +17,148 @@ function esc(str) {
     return d.innerHTML;
 }
 
-// ── Renderizado por Columna ───────────────────────────────────────────────────
+// Añade sufijo 'P' solo en columna preferencial
+function fmtNum(ticket_numero, esPref) {
+    return esPref ? `${esc(ticket_numero)}P` : esc(ticket_numero);
+}
 
-function renderizarLista(contenedorId, historial, esPref) {
-    const contenedor = document.getElementById(contenedorId);
+// ── Renderizado de columna ────────────────────────────────────────────────────
+
+/**
+ * @param {string}   id        - ID del contenedor DOM
+ * @param {object[]} historial - Tickets ya llamados (tienen box_asignado)
+ * @param {object[]} cola      - Tickets en espera (box_asignado null)
+ * @param {boolean}  esPref    - true = columna preferencial
+ */
+function renderizarColumna(id, historial, cola, esPref) {
+    const contenedor = document.getElementById(id);
     if (!contenedor) return;
 
-    if (historial.length === 0) {
-        contenedor.innerHTML = '<div class="ticket-vacio">— Esperando llamados —</div>';
+    if (historial.length === 0 && cola.length === 0) {
+        contenedor.innerHTML = '<div class="ticket-vacio">— Sin turnos —</div>';
         return;
     }
 
-    const actual = historial[0];
-    const siguientes = historial.slice(1, 4);
-
     const cp = esPref ? ' preferencial' : '';
-    // Tu lógica original: añade 'P' al número si es preferencial
-    const numActual = esPref ? `${esc(actual.ticket_numero)}P` : esc(actual.ticket_numero);
+    let html = '';
 
-    let html = `
-        <div class="ticket-destacado${cp}">
-            <span class="ticket-destacado__numero">${numActual}</span>
-            <span class="ticket-destacado__box">${esc(actual.box_asignado)}</span>
-        </div>
-    `;
+    if (historial.length > 0) {
+        // Ticket actualmente llamado (más reciente en historial)
+        const a = historial[0];
+        html += `
+            <div class="ticket-destacado${cp}">
+                <span class="ticket-destacado__numero">${fmtNum(a.ticket_numero, esPref)}</span>
+                <span class="ticket-destacado__box">${esc(a.box_asignado)}</span>
+            </div>`;
 
-    if (siguientes.length > 0) {
-        html += `<ul class="lista-secundarios" aria-label="Próximos turnos">`;
-        siguientes.forEach(t => {
-            const num = esPref ? `${esc(t.ticket_numero)}P` : esc(t.ticket_numero);
-            html += `
-                <li class="ticket-secundario${cp}">
-                    <span class="sec-num">${num}</span>
-                    <span class="sec-box">${esc(t.box_asignado)}</span>
-                </li>
-            `;
-        });
-        html += `</ul>`;
+        // Próximos: preferir la cola real; si está vacía, mostrar el historial anterior
+        const proximos = cola.length > 0 ? cola.slice(0, 3) : historial.slice(1, MAX_HIST);
+        if (proximos.length > 0) {
+            html += `<ul class="lista-secundarios" aria-label="Próximos turnos">`;
+            proximos.forEach(t => {
+                const label = t.box_asignado ? esc(t.box_asignado) : 'En espera';
+                html += `
+                    <li class="ticket-secundario${cp}">
+                        <span class="sec-num">${fmtNum(t.ticket_numero, esPref)}</span>
+                        <span class="sec-box">${label}</span>
+                    </li>`;
+            });
+            html += `</ul>`;
+        }
+
+    } else {
+        // Nadie ha sido llamado aún → mostrar el primero de la cola como "Próximo"
+        const [primero, ...resto] = cola;
+        html += `
+            <div class="ticket-destacado${cp}">
+                <span class="ticket-destacado__numero">${fmtNum(primero.ticket_numero, esPref)}</span>
+                <span class="ticket-destacado__box">Próximo</span>
+            </div>`;
+
+        if (resto.length > 0) {
+            html += `<ul class="lista-secundarios" aria-label="En espera">`;
+            resto.slice(0, 3).forEach(t => {
+                html += `
+                    <li class="ticket-secundario${cp}">
+                        <span class="sec-num">${fmtNum(t.ticket_numero, esPref)}</span>
+                        <span class="sec-box">En espera</span>
+                    </li>`;
+            });
+            html += `</ul>`;
+        }
     }
 
     contenedor.innerHTML = html;
 }
 
-// ── Procesamiento Global ──────────────────────────────────────────────────────
+// ── Procesamiento del payload de la API ───────────────────────────────────────
 
 function renderizarTodo(data) {
-    let llamadosActuales = [];
+    const llamadosNormal   = [];
+    const llamadosPref     = [];
+    const colaNormal       = [];
+    const colaPreferencial = [];
 
-    // Recopilar el primer turno de cada área (el que está en el box actualmente)
+    // Separar TODO el payload en 4 cubos: llamados (con box) vs cola (sin box), ×2 categorías
     for (const area in data) {
-        const tickets = data[area];
-        if (tickets && tickets.length > 0 && tickets[0].box_asignado) {
-            llamadosActuales.push(tickets[0]);
-        }
+        data[area].forEach(ticket => {
+            if (ticket.box_asignado) {
+                (ticket.es_preferencial ? llamadosPref : llamadosNormal).push(ticket);
+            } else {
+                (ticket.es_preferencial ? colaPreferencial : colaNormal).push(ticket);
+            }
+        });
     }
 
-    // Separar los llamados actuales en normales y preferenciales
-    let actualesNormal = llamadosActuales.filter(t => !t.es_preferencial);
-    let actualesPref = llamadosActuales.filter(t => t.es_preferencial);
-
-    // Lógica para empujar los nuevos llamados al inicio de la cola
+    // Actualizar historial: agregar únicamente los tickets recién llamados (evitar duplicados)
     if (primeraCarga) {
-        historialNormal = [...actualesNormal];
-        historialPreferencial = [...actualesPref];
+        historialNormal       = [...llamadosNormal];
+        historialPreferencial = [...llamadosPref];
         primeraCarga = false;
     } else {
-        actualesNormal.forEach(nuevo => {
-            const existe = historialNormal.find(t => t.ticket_numero === nuevo.ticket_numero && t.box_asignado === nuevo.box_asignado);
-            if (!existe) historialNormal.unshift(nuevo);
-        });
-        actualesPref.forEach(nuevo => {
-            const existe = historialPreferencial.find(t => t.ticket_numero === nuevo.ticket_numero && t.box_asignado === nuevo.box_asignado);
-            if (!existe) historialPreferencial.unshift(nuevo);
-        });
+        const agregarNuevos = (historial, recientes) => {
+            recientes.forEach(nuevo => {
+                const existe = historial.find(
+                    t => t.ticket_numero === nuevo.ticket_numero && t.box_asignado === nuevo.box_asignado
+                );
+                if (!existe) historial.unshift(nuevo);
+            });
+        };
+        agregarNuevos(historialNormal, llamadosNormal);
+        agregarNuevos(historialPreferencial, llamadosPref);
     }
 
-    // Mantener solo los últimos 4 llamados de cada tipo para no desbordar la pantalla
-    if (historialNormal.length > 4) historialNormal = historialNormal.slice(0, 4);
-    if (historialPreferencial.length > 4) historialPreferencial = historialPreferencial.slice(0, 4);
+    if (historialNormal.length > MAX_HIST)       historialNormal       = historialNormal.slice(0, MAX_HIST);
+    if (historialPreferencial.length > MAX_HIST) historialPreferencial = historialPreferencial.slice(0, MAX_HIST);
 
-    // Enviar a pintar cada columna
-    renderizarLista('contenedor-normal', historialNormal, false);
-    renderizarLista('contenedor-preferencial', historialPreferencial, true);
+    renderizarColumna('contenedor-normal',       historialNormal,       colaNormal,       false);
+    renderizarColumna('contenedor-preferencial', historialPreferencial, colaPreferencial, true);
 }
 
-// ── Modo SSE (tiempo real) ────────────────────────────────────────────────────
+// ── SSE (tiempo real) ─────────────────────────────────────────────────────────
 
 function conectarSSE() {
     const es = new EventSource(SSE_URL);
 
     es.addEventListener('visor', e => {
-        try {
-            renderizarTodo(JSON.parse(e.data));
-        } catch { /* JSON malformado — ignorar */ }
+        try { renderizarTodo(JSON.parse(e.data)); } catch { /* JSON malformado */ }
     });
 
     es.addEventListener('error', () => {
-        // Si SSE falla (red, timeout Apache) → cerrar y caer al polling
         es.close();
-        console.warn('[Visor] SSE desconectado, cambiando a polling…');
+        console.warn('[Visor] SSE desconectado → cambiando a polling');
         setTimeout(conectarPolling, 3000);
     });
 }
 
-// ── Modo Polling (fallback) ───────────────────────────────────────────────────
+// ── Polling (fallback) ────────────────────────────────────────────────────────
 
 async function actualizarVisor() {
     try {
         const respuesta = await ApiService.get('visor');
         renderizarTodo(respuesta.data ?? {});
-    } catch (error) {
-        console.error('[Visor] Error al actualizar:', error.message);
+    } catch (err) {
+        console.error('[Visor] Error al actualizar:', err.message);
     }
 }
 
@@ -153,7 +170,7 @@ function conectarPolling() {
 // ── Reloj ─────────────────────────────────────────────────────────────────────
 
 function iniciarReloj() {
-    const reloj   = document.getElementById('reloj');
+    const reloj = document.getElementById('reloj');
     if (!reloj) return;
     const tick = () => {
         reloj.textContent = new Date().toLocaleTimeString('es-CL', {
@@ -169,11 +186,9 @@ function iniciarReloj() {
 document.addEventListener('DOMContentLoaded', () => {
     iniciarReloj();
 
-    // SSE disponible en todos los navegadores modernos; si no, caer a polling
     if (typeof EventSource !== 'undefined') {
         conectarSSE();
-        // Primera carga inmediata vía API para no esperar el primer evento SSE
-        actualizarVisor();
+        actualizarVisor(); // carga inicial sin esperar primer evento SSE
     } else {
         conectarPolling();
     }

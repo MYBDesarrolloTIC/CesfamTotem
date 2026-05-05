@@ -4,50 +4,55 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <title>Sala de Espera General — CESFAM</title>
-    
+    <title>Sala de Espera — CESFAM</title>
     <link rel="stylesheet" href="assets/css/visor.css" />
 </head>
 <body>
 
     <header class="visor-header">
         <h1 class="visor-titulo">CESFAM &mdash; SALA DE ESPERA</h1>
-        
-        <div style="display: flex; align-items: center; gap: 1.5rem;">
+        <div class="visor-header__right">
             <div class="visor-reloj" id="reloj" aria-live="polite"></div>
-            <button id="btn-theme-toggle" class="theme-btn" title="Cambiar Tema">☀️</button>
+            <button id="btn-theme-toggle" class="theme-btn" title="Cambiar Tema">&#9728;&#65039;</button>
         </div>
     </header>
 
     <main class="visor-grid">
-        <!-- COLUMNA 1: Turnos Normales -->
+
+        <!-- COLUMNA IZQUIERDA: Turnos Normales -->
         <section class="area-card" id="area-normal">
             <h2 class="area-titulo">Llamados Normales</h2>
-            <div class="modulo-contenedor" id="contenedor-normal" aria-label="Turnos Normales"></div>
+            <div class="modulo-contenedor" id="contenedor-normal" aria-label="Turnos Normales" aria-live="polite"></div>
         </section>
 
-        <!-- COLUMNA 2: Turnos Preferenciales -->
+        <!-- COLUMNA DERECHA: Turnos Preferenciales -->
         <section class="area-card preferencial-card" id="area-preferencial">
             <h2 class="area-titulo titulo-pref">Llamados Preferenciales</h2>
-            <div class="modulo-contenedor" id="contenedor-preferencial" aria-label="Turnos Preferenciales"></div>
+            <div class="modulo-contenedor" id="contenedor-preferencial" aria-label="Turnos Preferenciales" aria-live="polite"></div>
         </section>
+
     </main>
 
     <script type="module" src="assets/js/visor.js"></script>
-    
-    <!-- Lógica del botón Tema Claro/Oscuro -->
+
     <script>
-        const btnTheme = document.getElementById('btn-theme-toggle');
-        if (localStorage.getItem('cesfam_theme') === 'light') {
-            document.body.classList.add('light-theme');
-            btnTheme.textContent = '🌙';
-        }
-        btnTheme.addEventListener('click', () => {
-            document.body.classList.toggle('light-theme');
-            const isLight = document.body.classList.contains('light-theme');
-            localStorage.setItem('cesfam_theme', isLight ? 'light' : 'dark');
-            btnTheme.textContent = isLight ? '🌙' : '☀️';
-        });
+        (function () {
+            const btn  = document.getElementById('btn-theme-toggle');
+            const body = document.body;
+            const KEY  = 'cesfam_theme';
+
+            if (localStorage.getItem(KEY) === 'light') {
+                body.classList.add('light-theme');
+                btn.textContent = '🌙';
+            }
+
+            btn.addEventListener('click', function () {
+                const isLight = body.classList.toggle('light-theme');
+                localStorage.setItem(KEY, isLight ? 'light' : 'dark');
+                btn.textContent = isLight ? '🌙' : '☀️';
+            });
+        }());
     </script>
+
 </body>
 </html>

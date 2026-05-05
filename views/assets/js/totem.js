@@ -434,7 +434,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // ── Navegación: botones volver e inicio ───────────────────────────────────
     btnVolver0.addEventListener('click', () => { cerrarTeclado(); resetPaso1(); irA(0); });
     btnVolver1.addEventListener('click', () => {
-        if (state.tieneRut) irA(1);
+        if (state.tieneRut) { resetPaso1(); irA(1); }
         else irA(0);
     });
 
@@ -462,6 +462,7 @@ document.addEventListener('DOMContentLoaded', () => {
         ocultarAlerta(step2Error);
         fase1 = 'buscar';
         btnVerificar.textContent = 'Buscar →';
+        btnVerificar.disabled    = false;
         cerrarTeclado();
     }
 

@@ -25,6 +25,17 @@ const TotemAPI = {
     },
 
     /**
+     * Registra un nuevo paciente validando RUT, fecha de nacimiento y cruce heurístico.
+     * Solo llamar cuando buscarPaciente devuelve encontrado=false.
+     * @param {{ rut: string, fecha_nacimiento: string }} payload  fecha en YYYY-MM-DD
+     * @returns {{ id: number, edad: number, es_preferente: boolean }}
+     */
+    async registrarNuevoPaciente(payload) {
+        const res = await ApiService.post('totem_nuevo_paciente', payload);
+        return res.data;
+    },
+
+    /**
      * Crea un nuevo ticket en la cola.
      * @param {{ id_tipo_atencion: number, id_paciente: number|null, es_preferente: boolean }} payload
      * @returns {{ ticket_numero: string, letra: string, numero: number, es_preferencial: boolean, servicio: string }}

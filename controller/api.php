@@ -38,6 +38,7 @@ try {
         // ── Módulo Tótem (Paciente) ───────────────────────────────────────────
         'totem_servicios'         => $totem->servicios(),
         'totem_buscar_paciente'   => $totem->buscarPaciente(trim($_GET['rut'] ?? '')),
+        'totem_nuevo_paciente'    => $totem->registrarNuevoPaciente($body),
         'totem_crear_ticket'      => $totem->crearTicket($body),
 
         // ── Visor de sala ─────────────────────────────────────────────────

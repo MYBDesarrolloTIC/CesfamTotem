@@ -551,6 +551,44 @@ body.light-theme .ticket-numero {
     }
 }
 
+/* ── Visibilidad dinámica (controlada por JS con classList.add/remove) ─────── */
+.field-error.visible,
+.alert-error.visible {
+    display: block;
+}
+
+.ticket-pref-label.visible {
+    display: inline-block;
+}
+
+/* ── Panel de paciente encontrado ─────────────────────────────────────────── */
+.found-panel {
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+    background: rgba(52, 211, 153, 0.1);
+    border: 1.5px solid #34d399;
+    border-radius: var(--radius-sm);
+    padding: 0.9rem 1.2rem;
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.found-panel .found-icon {
+    font-size: 1.5rem;
+    font-weight: 900;
+    color: #10b981;
+    line-height: 1;
+    flex-shrink: 0;
+}
+
+.found-panel p {
+    font-size: clamp(0.95rem, 2.5vw, 1.1rem);
+    font-weight: 600;
+    color: #10b981;
+    margin: 0;
+}
+
 @keyframes popIn {
     0% {
         opacity: 0;

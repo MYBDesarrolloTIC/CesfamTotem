@@ -60,7 +60,7 @@
                 <!-- LADO IZQUIERDO: Formulario, Errores y Botones -->
                 <div style="flex: 1 1 400px; max-width: 480px; display: flex; flex-direction: column; gap: 1.5rem;">
                     <div class="form-panel">
-                        <h2>Ingrese sus datos</h2>
+                        <h2>Ingrese su RUT</h2>
 
                         <div class="field-group">
                             <label for="t-rut">RUT</label>
@@ -78,7 +78,14 @@
                             <span class="field-error" id="t-rut-error" role="alert"></span>
                         </div>
 
-                        <div class="field-group">
+                        <!-- Panel de confirmación: se muestra cuando el paciente ya existe en el sistema -->
+                        <div id="found-panel" class="found-panel" hidden aria-live="polite">
+                            <span class="found-icon" aria-hidden="true">✓</span>
+                            <p id="found-msg">—</p>
+                        </div>
+
+                        <!-- Campo fecha de nacimiento: visible solo para pacientes nuevos -->
+                        <div class="field-group" id="dob-group" hidden>
                             <label for="t-dob">Fecha de nacimiento</label>
                             <input
                                 type="text"
@@ -92,10 +99,6 @@
                             >
                             <span class="field-error" id="t-dob-error" role="alert"></span>
                         </div>
-
-                        <div id="preferente-badge" class="preferente-badge" hidden aria-live="polite">
-                            ⭐ Atención Preferencial
-                        </div>
                     </div>
 
                     <!-- Mensaje de error general del paso 1 -->
@@ -105,7 +108,7 @@
                     <div style="display:flex; gap:0.75rem; width:100%;">
                         <button class="btn-outline-touch" id="btn-volver-0">← Volver</button>
                         <button class="btn-touch btn-primary-touch btn-large" id="btn-verificar">
-                            Verificar datos →
+                            Buscar →
                         </button>
                     </div>
                 </div>

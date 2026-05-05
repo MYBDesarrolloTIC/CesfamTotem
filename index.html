@@ -4,55 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CESFAM — Sistema de Gestión de Turnos</title>
-    <style>
-        :root {
-            --primary: #1a3f6b;
-            --accent:  #2d7dd2;
-            --bg:      #070c18;
-            --cyan:    #4fc3f7;
-        }
-        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-        body {
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            background: linear-gradient(135deg, var(--bg) 0%, var(--primary) 100%);
-            font-family: 'Segoe UI', system-ui, sans-serif;
-            color: #e8f4fd;
-            gap: 2rem;
-            padding: 2rem;
-        }
-        header { text-align: center; }
-        header h1 { font-size: clamp(1.5rem, 5vw, 2.5rem); font-weight: 800; color: var(--cyan); }
-        header p  { font-size: 1rem; color: #7da7c4; margin-top: 0.4rem; }
-        .cards {
-            display: flex;
-            gap: 1.5rem;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
-        .card {
-            background: #0f1e35;
-            border: 2px solid #1e3a5f;
-            border-radius: 20px;
-            padding: 2.5rem 2rem;
-            width: 260px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 1rem;
-            text-decoration: none;
-            color: inherit;
-            transition: border-color 0.2s, transform 0.2s;
-        }
-        .card:hover { border-color: var(--cyan); transform: translateY(-4px); }
-        .card .icon { font-size: 3.5rem; }
-        .card h2    { font-size: 1.2rem; font-weight: 700; text-align: center; }
-        .card p     { font-size: 0.85rem; color: #7da7c4; text-align: center; line-height: 1.4; }
-        footer { font-size: 0.78rem; color: #3a5f82; }
-    </style>
+    
+    <!-- Enlace al archivo CSS separado -->
+    <link rel="stylesheet" href="views/assets/css/index.css">
 </head>
 <body>
     <header>
@@ -71,13 +25,54 @@
             <h2>Ingreso Funcionarios</h2>
             <p>Acceso al panel de gestión de colas para el personal.</p>
         </a>
-        <a class="card" href="views/visor.html">
+        <a class="card" href="#" id="btn-abrir-visores">
             <span class="icon">📺</span>
-            <h2>Visor de Sala</h2>
-            <p>Pantalla de turnos llamados para la sala de espera.</p>
+            <h2>Visores de Sala</h2>
+            <p>Pantallas de turnos llamados para las salas de espera.</p>
         </a>
     </div>
 
     <footer>Centro de Salud Familiar — Sistema de Turnos v2.0</footer>
+
+    <!-- ── MODAL SELECCIÓN DE VISOR ── -->
+    <div id="modal-visores" class="modal-overlay" hidden>
+        <div class="modal-box">
+            <div class="modal-header">
+                <h2>Seleccione el Visor</h2>
+                <button id="btn-cerrar-modal" class="btn-icon" aria-label="Cerrar">✕</button>
+            </div>
+            <div class="modal-body">
+                <a href="views/visor.html" class="btn-visor btn-general">
+                    <span style="font-size: 1.5rem;">📺</span>
+                    Visor General
+                </a>
+                <a href="views/visorFarmacia.html" class="btn-visor btn-farmacia">
+                    <span style="font-size: 1.5rem;">💊</span>
+                    Visor Farmacia
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const btnAbrir = document.getElementById('btn-abrir-visores');
+        const btnCerrar = document.getElementById('btn-cerrar-modal');
+        const modal = document.getElementById('modal-visores');
+
+        btnAbrir.addEventListener('click', (e) => {
+            e.preventDefault();
+            modal.hidden = false;
+        });
+
+        btnCerrar.addEventListener('click', () => {
+            modal.hidden = true;
+        });
+
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                modal.hidden = true;
+            }
+        });
+    </script>
 </body>
 </html>

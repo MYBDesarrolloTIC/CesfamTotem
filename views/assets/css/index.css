@@ -6,7 +6,7 @@
 :root {
     --primary:     #1a3f6b;
     --bg:          #070c18;
-    --rojo:        #ef4444; /* Reemplaza al antiguo cyan */
+    --rojo:        #ef4444; 
     --rojo-hover:  #dc2626;
 }
 
@@ -36,6 +36,7 @@ header {
     text-align: center; 
 }
 
+/* AQUÍ SE APLICA EL COLOR ROJO AL TÍTULO */
 header h1 { 
     font-size: clamp(1.5rem, 5vw, 2.5rem); 
     font-weight: 800; 
@@ -76,14 +77,15 @@ footer {
     gap: 1rem;
     text-decoration: none;
     color: inherit;
-    transition: border-color 0.2s, transform 0.2s;
+    transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
     cursor: pointer;
 }
 
+/* AQUÍ SE APLICA EL BORDE ROJO AL PASAR EL MOUSE */
 .card:hover { 
     border-color: var(--rojo); 
     transform: translateY(-4px); 
-    box-shadow: 0 8px 25px rgba(239, 68, 68, 0.15); /* Sombra roja sutil */
+    box-shadow: 0 8px 25px rgba(239, 68, 68, 0.15); 
 }
 
 .card .icon { 
@@ -141,6 +143,7 @@ footer {
     padding-bottom: 1rem;
 }
 
+/* TÍTULO DEL MODAL EN ROJO */
 .modal-header h2 { 
     font-size: 1.3rem; 
     color: var(--rojo); 
@@ -184,7 +187,6 @@ footer {
     transform: scale(0.98); 
 }
 
-/* Botón principal rojo */
 .btn-general { 
     background: var(--rojo); 
     color: white; 
@@ -194,7 +196,6 @@ footer {
     background: var(--rojo-hover); 
 }
 
-/* Botón secundario oscuro con acento rojo al pasar el mouse */
 .btn-farmacia { 
     background: #0f1e35; 
     color: #e8f4fd; 
@@ -207,9 +208,6 @@ footer {
     color: var(--rojo);
 }
 
-/* =========================================
-   Animaciones
-   ========================================= */
 @keyframes fadeIn { 
     from { opacity: 0; } 
     to { opacity: 1; } 
